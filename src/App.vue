@@ -1,5 +1,10 @@
 <template>
   <div id="app">
+    <div class="a">
+      <div class="b">
+          app.vue
+      </div>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -10,7 +15,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang='scss' scoped>
+ @import 'assets/scss/test';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
