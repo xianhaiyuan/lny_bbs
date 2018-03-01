@@ -24,16 +24,16 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 > VSCode
 
-###安装的插件
+### 安装的插件
 
--Auto Close Tag
--Auto Rename Tag
--Beautify
--ESlint
--SCSS IntelliSense
--scss-lint
--Vetur
--Vue VSCode Snippets
+- Auto Close Tag
+- Auto Rename Tag
+- Beautify
+- ESlint
+- SCSS IntelliSense
+- scss-lint
+- Vetur
+- Vue VSCode Snippets
 
 ### 用户设置
 
@@ -109,7 +109,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 }
 ```
 
-###.eslintrc.json
+### .eslintrc.json
 ```
 {
   "env": {
