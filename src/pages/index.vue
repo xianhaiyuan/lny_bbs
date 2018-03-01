@@ -5,24 +5,26 @@
     </div>
     <div class="g-bd">
       <div class="g-mn">
+        <figure id="u-lgi-pic">
+          <a href="#">
+            <img src="../assets/img/May.jpg" alt="点击进入岭南园">
+          </a>
+        </figure>
+        <e-button></e-button>
       </div>
-    </div>
-    <div class="g-ft">
-      <v-footer></v-footer>
     </div>
   </div>
 </template>
 <script>
 import header from "../components/header";
-import footer from "../components/footer";
+
 export default {
-  name: "index",
+  name: "v-index",
   data() {
     return {};
   },
   components: {
-    "v-header": header,
-    "v-footer": footer
+    "v-header": header
   },
   methods: {
     name() {}
@@ -30,5 +32,5 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-
+@import "../assets/scss/pages/index";
 </style>
