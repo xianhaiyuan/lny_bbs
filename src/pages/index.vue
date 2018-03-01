@@ -39,11 +39,13 @@ export default {
       if (value === "") {
         callback(new Error("请输入密码"));
       }
+      callback();
     };
     var validateUsername = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入用户名"));
       }
+      callback();
     };
     return {
       userForm: {
@@ -62,7 +64,15 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      console.log(this[formName].username);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          alert("提交成功!");
+          console.log(this[formName].username);
+        } else {
+          alert("提交失败!!");
+          return false;
+        }
+      });
     }
   }
 };
