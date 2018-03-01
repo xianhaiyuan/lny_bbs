@@ -5,7 +5,7 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import store from './vuex/store'
-// import 'element-ui/lib/theme-chalk/index.css'
+import './components/base/element'
 
 Vue.prototype.$ajax = axios
 Vue.config.productionTip = false
