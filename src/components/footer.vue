@@ -13,9 +13,9 @@ export default {
   text-align: center;
   line-height: 1.2;
   margin: {
-    top: 6rem;
-    bottom: 1rem;
+    top: 4rem;
   }
+  font-family: "Times New Roman", Times, serif;
 }
 </style>
 
