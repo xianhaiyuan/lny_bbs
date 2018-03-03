@@ -13,7 +13,6 @@ export default new Router({
     name: 'r-index',
     component: index,
     beforeEnter: (to, from, next) => {
-      console.log(to);
       next();
     }
   }, {
@@ -22,7 +21,6 @@ export default new Router({
     component: article,
     props: true,
     beforeEnter: (to, from, next) => {
-      console.log(to);
       next();
     }
   }, {

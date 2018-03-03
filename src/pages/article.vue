@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import qs from "querystring";
 export default {
   data() {
     return {};

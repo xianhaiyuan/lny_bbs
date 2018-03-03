@@ -36,7 +36,8 @@
 </template>
 <script>
 import vHeader from "../components/header";
-import qs from "querystring";
+import api from "../api/api";
+import MessageBox from "../utils/MessageBox";
 export default {
   name: "v-index",
   data() {
@@ -70,14 +71,22 @@ export default {
   methods: {
     submitForm_Login(formName) {
       this.$refs[formName].validate(valid => {
+        console.log(this[formName]);
         if (valid) {
-          this.$router.push({
-            name: "r-article",
-            query: { userid: this.userid }
-          });
-          console.log(this[formName].username);
+          api
+            .ajax("/login/post", this[formName], "post")
+            .then(res => {
+              console.log(res);
+              this.$router.push({
+                name: "r-article",
+                query: { userid: this.userid }
+              });
+            })
+            .catch(err => {
+              console.log(err);
+            });
         } else {
-          this.openMessageBox("请输入用户名和密码", "登录失败");
+          MessageBox.alert("错误", "登录失败", "请输入用户名和密码");
           return false;
         }
       });
@@ -90,18 +99,6 @@ export default {
     To_Article() {
       this.$router.push({
         name: "r-article"
-      });
-    },
-    openMessageBox(content, msg) {
-      console.log("aaa");
-      this.$alert(content, "错误", {
-        confirmButtonText: "确定",
-        callback: () => {
-          this.$message({
-            type: "error",
-            message: msg
-          });
-        }
       });
     }
   }

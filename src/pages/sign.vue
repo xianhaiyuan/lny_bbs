@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="g-doc">
     sign
   </div>
 </template>
@@ -8,6 +8,6 @@
 export default {};
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+@import "../assets/scss/pages/sign";
 </style>
