@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import login from '@/pages/login'
 import index from '@/pages/index'
-import article from '@/pages/article'
 import sign from '@/pages/sign'
 
 Vue.use(Router)
@@ -10,23 +10,31 @@ export default new Router({
   mode: 'history',
   routes: [{
     path: '/',
-    name: 'r-index',
-    component: index,
+    name: 'r-default',
     beforeEnter: (to, from, next) => {
-      next();
+      if (!Vue.prototype.$session.get("user")) {
+        next({
+          name: 'r-login'
+        })
+      } else {
+        next({
+          name: 'r-index'
+        });
+      }
     }
   }, {
-    path: '/article',
-    name: 'r-article',
-    component: article,
-    props: true,
-    beforeEnter: (to, from, next) => {
-      next();
-    }
+    path: '/index',
+    name: 'r-index',
+    component: index,
+    props: true
   }, {
     path: '/sign',
     name: 'r-sign',
     component: sign
 
+  }, {
+    path: '/login',
+    name: 'r-login',
+    component: login
   }]
 })

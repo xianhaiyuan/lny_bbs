@@ -1,19 +1,10 @@
 <template>
-  <div class="g-doc">
-    <router-view></router-view>
-    <div class="g-ft">
-      <v-footer></v-footer>
-    </div>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>
-import footer from "./components/footer";
 export default {
-  name: "App",
-  components: {
-    "v-footer": footer
-  }
+  name: "App"
 };
 </script>
 
