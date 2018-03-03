@@ -88,14 +88,8 @@ export default {
       });
     },
     To_Article() {
-      var user = {
-        name: "lisi",
-        age: 20
-      };
-      sessionStorage.setItem("user", qs.stringify(user));
       this.$router.push({
-        name: "r-article",
-        query: { userid: this.userid }
+        name: "r-article"
       });
     },
     openMessageBox(content, msg) {

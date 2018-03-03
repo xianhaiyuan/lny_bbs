@@ -5,8 +5,10 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import store from './vuex/store'
-import './components/base/element'
+import './utils/element'
+import sessionManager from './utils/sessionManager'
 
+Vue.prototype.$session = sessionManager
 Vue.prototype.$ajax = axios
 Vue.config.productionTip = false
 

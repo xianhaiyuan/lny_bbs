@@ -8,18 +8,12 @@
 import qs from "querystring";
 export default {
   data() {
-    return {
-      user: ""
-    };
+    return {};
   },
   computed: {
-    getUser() {
-      return qs.parse(sessionStorage.getItem("user")).name;
-    }
+    getUser() {}
   },
-  created() {
-    console.log(qs.parse(sessionStorage.getItem("user")).name);
-  }
+  created() {}
 };
 </script>
 
