@@ -26,7 +26,11 @@ export default new Router({
     path: '/index',
     name: 'r-index',
     component: index,
-    props: true
+    props: true,
+    children: [{
+      path: 'sign',
+      component: sign
+    }]
   }, {
     path: '/sign',
     name: 'r-sign',
