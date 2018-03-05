@@ -15,11 +15,24 @@ import {
   Autocomplete,
   Dropdown,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Radio,
+  RadioGroup,
+  RadioButton,
+  DatePicker,
+  Breadcrumb,
+  BreadcrumbItem
 } from 'element-ui';
 Vue.prototype.$ELEMENT = {
   size: 'small'
 }
+
+Vue.component(Breadcrumb.name, Breadcrumb)
+Vue.component(BreadcrumbItem.name, BreadcrumbItem)
+Vue.component(DatePicker.name, DatePicker)
+Vue.component(Radio.name, Radio)
+Vue.component(RadioGroup.name, RadioGroup)
+Vue.component(RadioButton.name, RadioButton)
 Vue.component(DropdownMenu.name, DropdownMenu)
 Vue.component(DropdownItem.name, DropdownItem)
 Vue.component(Dropdown.name, Dropdown)

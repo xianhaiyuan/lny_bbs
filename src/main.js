@@ -12,7 +12,7 @@ Vue.prototype.$session = sessionManager
 Vue.prototype.$ajax = axios
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
+
 new Vue({
   el: '#app',
   router,

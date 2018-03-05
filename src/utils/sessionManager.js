@@ -4,16 +4,17 @@ let isType = (obj) => {
   if (type == '[object Array]') {
     return 'Array';
   } else if (type == '[object Object]') {
-    return "Object"
+    return 'Object';
   } else {
     return 'Other';
   }
 }
 export default {
   set(key, value) {
-    if (isType(value) === "Object") {
+    if (isType(value) === 'Object') {
       value = qs.stringify(value)
     }
+
     sessionStorage.setItem(key, value)
   },
   get(key) {
@@ -25,8 +26,6 @@ export default {
       value = qs.parse(value)
     }
     return value
-
-
   },
   remove(key) {
     sessionStorage.removeItem(key)

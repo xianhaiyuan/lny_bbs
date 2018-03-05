@@ -58,6 +58,7 @@ $asd-color: #293134;
   color: #fff;
   height: 100%;
   background-color: $asd-color;
+  align-self: stretch;
 }
 .m-tit {
   background-color: #f29c9f;

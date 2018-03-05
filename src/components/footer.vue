@@ -1,5 +1,5 @@
 <template>
-  <div class="g-ft-1">
+  <div class="g-ft">
     <p>powered by xhy© 2018--岭南园BBS</p>
   </div>
 </template>
@@ -9,13 +9,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.g-ft-1 {
-  text-align: center;
+.g-ft {
+  display: flex;
   line-height: 1.2;
-  margin: {
-    top: 4rem;
-  }
+  height: 100%;
   font-family: "Times New Roman", Times, serif;
+  p {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>
 

@@ -25,13 +25,13 @@ $hd-color: #eeeeee;
   border: {
     bottom: 1px solid #ddd;
   }
-  padding: 0 20px;
   background-color: $hd-color;
 }
 .u-search {
   display: flex;
   width: 300px;
   height: 100%;
+  padding: 0 20px;
   align-items: center;
 }
 .u-right-icon {

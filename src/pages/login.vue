@@ -7,7 +7,7 @@
             <img src="../assets/img/May.jpg" alt="点击进入岭南园">
           </a>
         </figure>
-        <el-form :model="userForm" id="userForm" status-icon :rules="rules1" ref="userForm" label-width="100px" inline>
+        <el-form :model="userForm" id="userForm" status-icon :rules="rules" ref="userForm" label-width="100px" inline>
           <el-form-item prop="username" size="mini">
             <el-input type="text" v-model="userForm.username" auto-complete="true" autofocus placeholder="请输入用户名"></el-input>
           </el-form-item>
@@ -61,7 +61,7 @@ export default {
         username: "",
         pass: ""
       },
-      rules1: {
+      rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
         pass: [{ validator: validatePass, trigger: "blur" }]
       },
@@ -74,15 +74,15 @@ export default {
   methods: {
     submitForm_Login(formName) {
       this.$refs[formName].validate(valid => {
-        console.log(this[formName]);
+        this.$session.set("user", { username: "lisi", age: 20 });
         if (valid) {
           api
             .ajax("/login/post", this[formName], "post")
             .then(res => {
               console.log(res);
-              this.$session.set("user", { username: "lisi", age: 20 });
+              // this.$session.set("user", { username: "lisi", age: 20 });
               this.$router.push({
-                name: "r-index",
+                name: "首页",
                 query: { userid: this.userid }
               });
             })
@@ -97,12 +97,12 @@ export default {
     },
     To_Sign() {
       this.$router.push({
-        name: "r-sign"
+        path: "/sign"
       });
     },
     To_Article() {
       this.$router.push({
-        name: "r-index"
+        name: "首页"
       });
     }
   }
