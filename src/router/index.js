@@ -4,7 +4,6 @@ import login from '@/pages/login'
 import index from '@/pages/index'
 import sign from '@/pages/sign'
 import test from '@/pages/test'
-import qs from 'querystring'
 Vue.use(Router)
 
 let router = new Router({

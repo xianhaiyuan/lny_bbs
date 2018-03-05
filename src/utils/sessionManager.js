@@ -1,4 +1,3 @@
-import qs from 'querystring'
 let isType = (obj) => {
   var type = Object.prototype.toString.call(obj);
   if (type == '[object Array]') {
@@ -11,8 +10,8 @@ let isType = (obj) => {
 }
 export default {
   set(key, value) {
-    if (isType(value) === 'Object') {
-      value = qs.stringify(value)
+    if (isType(value) === 'Object' || isType(value) === 'Array') {
+      value = JSON.stringify(value)
     }
 
     sessionStorage.setItem(key, value)
@@ -22,8 +21,8 @@ export default {
     if (!value) {
       return value;
     }
-    if (value.indexOf('&') != -1) {
-      value = qs.parse(value)
+    if (value.indexOf('{') == 0 || value.indexOf('[') == 0) {
+      value = JSON.parse(value)
     }
     return value
   },
