@@ -1,58 +1,21 @@
-.g-bd {
+.el-header,
+.el-container,
+.el-footer,
+.el-aside,
+.el-main {
+  padding: 0;
+}
+
+.el-breadcrumb {
+  font-size: 12px;
   padding: {
-    top: 2rem;
+    left: 30px;
   }
 }
 
-#u-lgi-pic {
-  text-align: center;
-  img {
-    width: 645px;
-    height: 405px;
-    border: 2px solid rgb(235, 165, 84);
-  }
-}
-
-#userForm {
-  width: 640px;
-  margin: 0 auto;
-  margin-top: .5rem;
-}
-
-.m-count {
-  width: 652px;
-  margin: 1rem auto;
-  text-align: center;
-}
-
-.u-all {
-  color: rgb(253, 82, 82);
-  font: {
-    weight: bold;
-    style: italic;
-    size: .8rem;
-  }
+.banner {
   padding: {
-    right: 8px;
-  }
-}
-
-.u-user {
-  color: rgb(69, 126, 248);
-  font: {
-    weight: bold;
-    style: italic;
-    size: .8rem;
-  }
-  padding: {
-    right: 8px;
-  }
-}
-
-.u-tourist {
-  font: {
-    weight: bold;
-    style: italic;
-    size: .8rem;
+    top: 40px;
+    bottom: 20px;
   }
 }

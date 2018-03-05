@@ -7,15 +7,36 @@
           <img src="../assets/img/icon-setting.png" alt="">
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人设置</el-dropdown-item>
-          <el-dropdown-item divided>退出登录</el-dropdown-item>
+          <el-dropdown-item v-if="user">个人设置</el-dropdown-item>
+          <el-dropdown-item v-if="!user">
+            <router-link to="/login">登录</router-link>
+          </el-dropdown-item>
+          <el-dropdown-item v-if="!user">
+            <router-link to="/sign">注册</router-link>
+          </el-dropdown-item>
+          <el-dropdown-item v-if="user" divided>
+            <div @click="unLogin">退出登录</div>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      user: this.$session.get("user")
+    };
+  },
+  methods: {
+    unLogin() {
+      this.$session.remove("user");
+      this.user = null;
+      console.log(this.$session.get("user"));
+    }
+  }
+};
 </script>
 <style lang="scss" scoped>
 $hd-color: #eeeeee;

@@ -21,12 +21,14 @@ import {
   RadioButton,
   DatePicker,
   Breadcrumb,
-  BreadcrumbItem
+  BreadcrumbItem,
+  Card
 } from 'element-ui';
 Vue.prototype.$ELEMENT = {
   size: 'small'
 }
 
+Vue.component(Card.name, Card)
 Vue.component(Breadcrumb.name, Breadcrumb)
 Vue.component(BreadcrumbItem.name, BreadcrumbItem)
 Vue.component(DatePicker.name, DatePicker)

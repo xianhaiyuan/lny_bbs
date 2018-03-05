@@ -1,6 +1,6 @@
 <template>
   <div class="g-asd">
-    <div class="m-tit">岭南园论坛</div>
+    <router-link to="/" class="m-tit">岭南园论坛</router-link>
     <div class="m-userinfo">
       <div class="m-avatar"></div>
       <ul>
@@ -62,6 +62,7 @@ $asd-color: #293134;
 }
 .m-tit {
   background-color: #f29c9f;
+  color: #fff;
   height: 50px;
   width: 100%;
   font-size: 20px;

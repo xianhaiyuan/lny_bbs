@@ -1,36 +1,35 @@
 import Vue from 'vue'
 import Router from 'vue-Router'
 import login from '@/pages/login'
-import index from '@/pages/index'
+import root from '@/pages/root'
 import sign from '@/pages/sign'
-import test from '@/pages/test'
+import index from '@/pages/index'
+import test1 from '@/pages/test1'
+
 Vue.use(Router)
 
 let router = new Router({
   mode: 'history',
   routes: [{
-    beforeEnter: (to, from, next) => {
-      if (!Vue.prototype.$session.get("user")) {
-        next({
-          name: '登录'
-        })
-      } else {
-        next();
-      }
-    },
     path: '/',
-    name: '首页',
-    component: index,
+    name: 'root',
+    component: root,
     props: true,
+    redirect: '/index',
     children: [{
         name: "注册",
         path: 'sign',
         component: sign
       },
       {
-        name: "测试",
-        path: 'test',
-        component: test
+        name: "首页",
+        path: 'index',
+        component: index,
+        children: [{
+          name: "测试1",
+          path: 'test1',
+          component: test1
+        }]
       }
     ]
   }, {
@@ -52,7 +51,7 @@ router.beforeEach((to, from, next) => {
   if (index !== -1) {
     //如果存在路由列表，则把之后的路由都删掉
     routeList.splice(index + 1, routeList.length - index - 1);
-  } else if (to.name != '登录' && to.name != '注册') {
+  } else if (to.name != '登录' && to.name != 'root') {
     routeList.push({
       "name": to.name,
       "path": to.fullPath

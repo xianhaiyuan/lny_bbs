@@ -100,6 +100,12 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
+  },
+  created() {
+    this.$emit("freshNav");
+  },
+  beforeDestroy() {
+    this.$emit("freshNav");
   }
 };
 </script>

@@ -9,20 +9,14 @@ const getters = {
 }
 
 const mutations = {
-  addRoute(state, val) {
-    state.routeList.push(val)
-  },
-  removeRoute(state, val) {
-    state.routeList.splice(val.start, val.end)
+  setRouteList(state, val) {
+    state.routeList = val
   }
 }
 
 const actions = {
-  addRoute(context, val) {
-    context.commit('addRoute', val)
-  },
-  removeRoute(context, val) {
-    context.commit('removeRoute', val)
+  setRouteList(context, val) {
+    context.commit('setRouteList', val)
   }
 }
 
