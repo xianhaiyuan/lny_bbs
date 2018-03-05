@@ -4,7 +4,9 @@ import login from '@/pages/login'
 import root from '@/pages/root'
 import sign from '@/pages/sign'
 import index from '@/pages/index'
-import test1 from '@/pages/test1'
+import section from '@/pages/section'
+import article from '@/pages/article'
+
 
 Vue.use(Router)
 
@@ -24,13 +26,21 @@ let router = new Router({
       {
         name: "首页",
         path: 'index',
-        component: index,
-        children: [{
-          name: "测试1",
-          path: 'test1',
-          component: test1
-        }]
+        component: index
+      },
+      {
+        name: "版面列表",
+        path: "section",
+        component: section
+      },
+      {
+        name: "帖子",
+        path: 'section/article',
+        component: article
+
+
       }
+
     ]
   }, {
     path: '/login',

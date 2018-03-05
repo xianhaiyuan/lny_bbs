@@ -1,0 +1,21 @@
+.el-header,
+.el-container,
+.el-footer,
+.el-aside,
+.el-main {
+  padding: 0;
+}
+
+.el-breadcrumb {
+  font-size: 12px;
+  padding: {
+    left: 30px;
+  }
+}
+
+.banner {
+  padding: {
+    top: 40px;
+    bottom: 20px;
+  }
+}
