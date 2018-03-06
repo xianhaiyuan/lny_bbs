@@ -7,7 +7,11 @@
       <el-button class="u-submit" type="primary" @click="showContent">提交
         <i class="el-icon-upload el-icon--right"></i>
       </el-button>
-      <!-- <div v-html="this.content"></div> -->
+      <!-- <div class="ql-editor" v-html="this.content"></div> -->
+      <div class="ql-container ql-snow" style="height:100%;">
+        <div class="ql-editor" v-html="this.content"></div>
+      </div>
+      <!-- <div class="article" v-html="compiledMarkdown"></div> -->
     </div>
   </div>
 </template>
@@ -69,8 +73,5 @@ export default {
 .el-input {
   width: 48%;
   margin-bottom: 16px;
-}
-.ql-container.ql-snow {
-  height: 350px;
 }
 </style>
