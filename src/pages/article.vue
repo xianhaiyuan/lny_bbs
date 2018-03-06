@@ -1,6 +1,6 @@
 <template>
   <div>
-    this is article
+    this is article{{ $route.params.id }}
   </div>
 </template>
 
@@ -20,6 +20,6 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>

@@ -22,12 +22,18 @@ import {
   DatePicker,
   Breadcrumb,
   BreadcrumbItem,
-  Card
+  Card,
+  Table,
+  TableColumn,
+  Pagination
 } from 'element-ui';
 Vue.prototype.$ELEMENT = {
   size: 'small'
 }
 
+Vue.component(Pagination.name, Pagination)
+Vue.component(Table.name, Table)
+Vue.component(TableColumn.name, TableColumn)
 Vue.component(Card.name, Card)
 Vue.component(Breadcrumb.name, Breadcrumb)
 Vue.component(BreadcrumbItem.name, BreadcrumbItem)

@@ -6,6 +6,7 @@ import sign from '@/pages/sign'
 import index from '@/pages/index'
 import section from '@/pages/section'
 import article from '@/pages/article'
+import publish from '@/pages/publish'
 
 
 Vue.use(Router)
@@ -30,15 +31,18 @@ let router = new Router({
       },
       {
         name: "版面列表",
-        path: "section",
+        path: "section/:id",
         component: section
       },
       {
         name: "帖子",
-        path: 'section/article',
+        path: 'section/article/:id',
         component: article
-
-
+      },
+      {
+        name: "发表帖子",
+        path: 'section/:id/publish',
+        component: publish
       }
 
     ]
