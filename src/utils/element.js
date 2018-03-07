@@ -25,12 +25,21 @@ import {
   Card,
   Table,
   TableColumn,
-  Pagination
+  Pagination,
+  Row,
+  Col,
+  Select,
+  Option,
+  OptionGroup
 } from 'element-ui';
 Vue.prototype.$ELEMENT = {
   size: 'small'
 }
-
+Vue.component(Select.name, Select)
+Vue.component(Option.name, Option)
+Vue.component(OptionGroup.name, OptionGroup)
+Vue.component(Row.name, Row)
+Vue.component(Col.name, Col)
 Vue.component(Pagination.name, Pagination)
 Vue.component(Table.name, Table)
 Vue.component(TableColumn.name, TableColumn)

@@ -107,6 +107,66 @@ export default {
               page_url: "/page2_url"
             }
           ]
+        },
+        {
+          car_tit: "卡片名称",
+          car_tit_url: "/car_tit_url",
+          tip: "热门话题",
+          pages: [
+            {
+              page_tit: "page1",
+              page_url: "/page1_url"
+            },
+            {
+              page_tit: "page2",
+              page_url: "/page2_url"
+            }
+          ]
+        },
+        {
+          car_tit: "卡片名称",
+          car_tit_url: "/car_tit_url",
+          tip: "热门话题",
+          pages: [
+            {
+              page_tit: "page1",
+              page_url: "/page1_url"
+            },
+            {
+              page_tit: "page2",
+              page_url: "/page2_url"
+            }
+          ]
+        },
+        {
+          car_tit: "卡片名称",
+          car_tit_url: "/car_tit_url",
+          tip: "热门话题",
+          pages: [
+            {
+              page_tit: "page1",
+              page_url: "/page1_url"
+            },
+            {
+              page_tit: "page2",
+              page_url: "/page2_url"
+            }
+          ]
+        },
+        {
+          car_tit: "卡片名称",
+          car_tit_url: "/car_tit_url",
+          tip: "热门话题",
+          pages: [
+            {
+              page_tit: "page1",
+              page_url: "/page1_url"
+            },
+            {
+              page_tit: "page2",
+              page_url: "/page2_url"
+            }
+          ]
         }
       ]
     };

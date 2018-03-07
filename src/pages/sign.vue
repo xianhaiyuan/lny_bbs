@@ -10,6 +10,16 @@
       <el-form-item label="昵称" prop="name" size="small" required>
         <el-input type="text" v-model="signForm.name" auto-complete="off"></el-input>
       </el-form-item>
+      <el-form-item label="年级" prop="grade">
+        <el-select v-model="signForm.grade" placeholder="请选择你的年级">
+          <el-option label="大一" value="大一"></el-option>
+          <el-option label="大二" value="大二"></el-option>
+          <el-option label="大三" value="大三"></el-option>
+          <el-option label="大四" value="大四"></el-option>
+          <el-option label="已毕业" value="已毕业"></el-option>
+          <el-option label="老师" value="老师"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="邮箱" prop="email" size="small">
         <el-input type="text" v-model="signForm.email" auto-complete="off"></el-input>
       </el-form-item>
@@ -61,6 +71,7 @@ export default {
         password: "",
         username: "",
         name: "",
+        grade: "",
         sex: "",
         email: "",
         birthday: ""
@@ -81,6 +92,9 @@ export default {
             message: "请选择日期",
             trigger: "change"
           }
+        ],
+        grade: [
+          { required: true, message: "请选择你的年级", trigger: "change" }
         ]
       }
     };

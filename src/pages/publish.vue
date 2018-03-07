@@ -84,9 +84,6 @@ export default {
 .publish {
   padding: 20px;
 }
-.ql-container {
-  height: 350px;
-}
 .u-submit {
   float: right;
   margin-top: 20px;
