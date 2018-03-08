@@ -66,7 +66,7 @@
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/add.png" alt="">
-                  <a href="#">添加</a>
+                  <a href="#">加友</a>
                 </el-col>
               </el-row>
             </div>
@@ -77,10 +77,12 @@
         </el-row>
       </div>
     </div>
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+    </el-pagination>
     <div class="m-reply">
       <quill-editor ref="myTextEditor" v-model="reply" :options="editorOption">
       </quill-editor>
-      <div>
+      <div class="u-btn">
         <el-button class="u-submit" type="primary" @click="showReply">回复
           <i class="el-icon-upload el-icon--right"></i>
         </el-button>
@@ -141,6 +143,12 @@ export default {
     },
     showReply() {
       console.log(this.reply);
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   },
   components: {

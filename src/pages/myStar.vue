@@ -1,11 +1,10 @@
 <template>
-  <div class="m-section">
-    <router-link :to="{name: '发表帖子', params: {sid: $route.params.sid} }" class="u-publish">发表帖子</router-link>
+  <div class="m-myStar">
     <div class="block">
       <el-table :data="tableData" style="width: 100%" stripe>
         <el-table-column label="主题" width="600">
           <template slot-scope="scope">
-            <router-link :to="{ name:'帖子', params: { sid: $route.params.sid, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
+            <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
           </template>
         </el-table-column>
 
@@ -28,12 +27,11 @@
           </template>
         </el-table-column>
 
-        <!-- <el-table-column label="作者">
+        <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
       </el-pagination>
@@ -51,7 +49,8 @@ export default {
         {
           date: "2016-05-02",
           name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
+          tit:
+            "上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄",
           commentCount: 1,
           aid: 1
         },
@@ -95,12 +94,17 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index);
-      console.log(row.id);
+      console.log(row.aid);
+    },
+    onEditorChange({ editor, html, text }) {
+      // console.log('editor change!', editor, html, text)
+      this.content = html;
+      console.log(html);
     }
   }
 };
 </script>
-<style lang="scss" scoped>
-@import "../assets/scss/pages/section";
-</style>
 
+<style lang="scss" scoped>
+@import "../assets/scss/pages/myStar";
+</style>

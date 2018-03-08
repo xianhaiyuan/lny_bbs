@@ -3,7 +3,7 @@
     <el-input autofocus v-model="tit" placeholder="请输入帖子主题"></el-input>
     <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)">
     </quill-editor>
-    <div>
+    <div class="u-btn">
       <el-button class="u-submit" type="primary" @click="showContent">提交
         <i class="el-icon-upload el-icon--right"></i>
       </el-button>
@@ -17,6 +17,8 @@
 
 <script>
 import { quillEditor } from "vue-quill-editor";
+import { createNamespacedHelpers } from "vuex";
+const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
     let toolbarOptions = [
@@ -50,6 +52,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["setRouteList"]),
     onEditorBlur(editor) {
       // console.log("editor blur!", editor.container.innerHTML);
       console.log("editor blur!", editor.getContents());
@@ -76,6 +79,12 @@ export default {
   },
   components: {
     quillEditor
+  },
+  created() {
+    this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
+  },
+  beforeDestroy() {
+    this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   }
 };
 </script>
@@ -84,8 +93,10 @@ export default {
 .publish {
   padding: 20px;
 }
+.u-btn {
+  text-align: right;
+}
 .u-submit {
-  float: right;
   margin-top: 20px;
 }
 .el-input {

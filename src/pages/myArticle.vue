@@ -1,11 +1,22 @@
 <template>
-  <div class="m-section">
-    <router-link :to="{name: '发表帖子', params: {sid: $route.params.sid} }" class="u-publish">发表帖子</router-link>
+  <div class="m-myArticle">
+    <el-dialog title="编辑帖子" :visible.sync="dialogEditVisible">
+      <div class="m-edit">
+        <el-input autofocus v-model="tit" placeholder="请输入帖子主题">{{this.tit}}</el-input>
+        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption">
+        </quill-editor>
+        <div class="u-btn">
+          <el-button class="u-submit" type="primary" @click="showContent">提交
+            <i class="el-icon-upload el-icon--right"></i>
+          </el-button>
+        </div>
+      </div>
+    </el-dialog>
     <div class="block">
       <el-table :data="tableData" style="width: 100%" stripe>
-        <el-table-column label="主题" width="600">
+        <el-table-column label="主题" width="400">
           <template slot-scope="scope">
-            <router-link :to="{ name:'帖子', params: { sid: $route.params.sid, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
+            <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
           </template>
         </el-table-column>
 
@@ -28,12 +39,12 @@
           </template>
         </el-table-column>
 
-        <!-- <el-table-column label="作者">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
       </el-pagination>
@@ -46,12 +57,41 @@ import { createNamespacedHelpers } from "vuex";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
+    let toolbarOptions = [
+      ["bold", "italic", "underline", "strike"], // toggled buttons
+      ["blockquote", "code-block"],
+
+      [{ header: 1 }, { header: 2 }], // custom button values
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ script: "sub" }, { script: "super" }], // superscript/subscript
+      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+      [{ direction: "rtl" }], // text direction
+
+      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ font: [] }],
+      [{ align: [] }],
+      ["link", "image"],
+      ["clean"] // remove formatting button
+    ];
     return {
+      content: "<h2>I am Example</h2>",
+      tit: "",
+      editorOption: {
+        modules: {
+          toolbar: toolbarOptions
+        }
+        // something config
+      },
+      dialogEditVisible: false,
       tableData: [
         {
           date: "2016-05-02",
           name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
+          tit:
+            "上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄",
           commentCount: 1,
           aid: 1
         },
@@ -95,12 +135,25 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index);
-      console.log(row.id);
+      console.log(row.aid);
+    },
+    handleEdit(index, row) {
+      this.dialogEditVisible = true;
+      this.tit = row.tit;
+      console.log(index, row);
+    },
+    onEditorChange({ editor, html, text }) {
+      // console.log('editor change!', editor, html, text)
+      this.content = html;
+      console.log(html);
+    },
+    showContent() {
+      console.log(this.content);
     }
   }
 };
 </script>
-<style lang="scss" scoped>
-@import "../assets/scss/pages/section";
-</style>
 
+<style lang="scss" scoped>
+@import "../assets/scss/pages/myArticle";
+</style>

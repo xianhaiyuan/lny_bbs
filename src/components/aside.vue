@@ -10,7 +10,7 @@
       </ul>
     </div>
     <div class="m-nav">
-      <a v-for="(item, index) in navs" @click="addClass(index)" :class="{'u-cur':index==cur}" :href=item.a_url><img :src='"../assets/img/" +item.img_name +".png"' alt="">{{ item.name }}</a>
+      <router-link v-for="(item, index) in navs" @click.native="addClass(index)" :class="{'u-cur':index==cur}" :key="item.id" :to="{name: item.name,params: {uid: 1}}"><img :src='"../assets/img/" +item.img_name +".png"' alt="">{{ item.name }}</router-link>
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
       navs: [
         {
           name: "首页",
-          a_url: "#",
+          a_url: "/",
           img_name: "icon-home"
         },
         {
@@ -33,12 +33,12 @@ export default {
         },
         {
           name: "我的帖子",
-          a_url: "#",
+          a_url: "/myArticle",
           img_name: "icon-page"
         },
         {
           name: "我的收藏",
-          a_url: "#",
+          a_url: "/myStar",
           img_name: "icon-star"
         }
       ]
@@ -46,6 +46,7 @@ export default {
   },
   methods: {
     addClass(index) {
+      console.log(index);
       this.cur = index;
     }
   }

@@ -7,7 +7,9 @@
           <img src="../assets/img/icon-setting.png" alt="">
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-if="user">个人设置</el-dropdown-item>
+          <el-dropdown-item v-if="user">
+            <router-link :to="{name: '用户设置',params: {uid: 1}}">用户设置 </router-link>
+          </el-dropdown-item>
           <el-dropdown-item v-if="!user">
             <router-link to="/login">登录</router-link>
           </el-dropdown-item>

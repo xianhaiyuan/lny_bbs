@@ -1,6 +1,19 @@
 <template>
-  <div class="g-sign">
+  <div class="m-userSetting">
     <el-form :model="signForm" status-icon :rules="rules" ref="signForm" label-width="100px" class="demo-ruleForm">
+      <el-form-item label="头像">
+        <!-- <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+        <el-dialog :visible.sync="dialogVisible">
+          <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog> -->
+        <div class="el-upload el-upload--picture-card" @click="avatar_click">
+          <i v-show="!signForm.picFile" class=" el-icon-plus"></i>
+          <img v-show="signForm.picFile" width="100%" :src="signForm.picFile" alt="">
+          <input type="file" @change="onFileChange($event)" ref="inputFile" class="el-upload__input">
+        </div>
+      </el-form-item>
       <el-form-item label="用户名" prop="username" size="small" required>
         <el-input type="text" v-model="signForm.username" auto-complete="off"></el-input>
       </el-form-item>
@@ -23,13 +36,13 @@
       <el-form-item label="邮箱" prop="email" size="small">
         <el-input type="text" v-model="signForm.email" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="性别" prop="sex" size="small">
+      <el-form-item label="性别" prop="sex" size="small ">
         <el-radio-group v-model="signForm.sex">
           <el-radio label="男"></el-radio>
           <el-radio label="女"></el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="生日" prop="birthday" size="small">
+      <el-form-item label="生日" prop="birthday" size="small ">
         <el-date-picker type="date" placeholder="选择日期" v-model="signForm.birthday" style="width: 250px;" value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -41,7 +54,6 @@
 </template>
 
 <script>
-import api from "../api/api";
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
 const { mapActions } = createNamespacedHelpers("routeStore");
@@ -76,8 +88,10 @@ export default {
         grade: "",
         sex: "",
         email: "",
-        birthday: ""
+        birthday: "",
+        picFile: ""
       },
+
       rules: {
         password: [{ validator: validatePass, trigger: "blur" }],
         username: [{ validator: validateUsername, trigger: "blur" }],
@@ -101,8 +115,28 @@ export default {
       }
     };
   },
-
+  created() {
+    this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
+  },
+  beforeDestroy() {
+    this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
+  },
   methods: {
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files);
+    },
+    createImage(file) {
+      let reader = new window.FileReader();
+      reader.readAsDataURL(file[0]);
+      reader.onload = e => {
+        this.signForm.picFile = e.target.result;
+      };
+    },
+    avatar_click() {
+      this.$refs.inputFile.dispatchEvent(new MouseEvent("click"));
+    },
     ...mapActions(["setRouteList"]),
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -116,17 +150,19 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+      console.log(file);
     }
-  },
-  created() {
-    this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
-  },
-  beforeDestroy() {
-    this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   }
 };
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/scss/pages/sign";
+@import "../assets/scss/pages/userSetting";
 </style>

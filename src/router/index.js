@@ -7,7 +7,9 @@ import index from '@/pages/index'
 import section from '@/pages/section'
 import article from '@/pages/article'
 import publish from '@/pages/publish'
-
+import userSetting from '@/pages/userSetting'
+import myArticle from '@/pages/myArticle'
+import myStar from '@/pages/myStar'
 
 Vue.use(Router)
 
@@ -31,20 +33,34 @@ let router = new Router({
       },
       {
         name: "版面列表",
-        path: "section/:id",
+        path: "section/:sid",
         component: section
       },
       {
         name: "帖子",
-        path: 'section/article/:id',
+        path: 'section/:sid/article/:aid',
         component: article
       },
       {
         name: "发表帖子",
-        path: 'section/:id/publish',
+        path: 'section/:sid/publish',
         component: publish
+      }, {
+        name: "用户设置",
+        path: 'index/user/:uid/setting',
+        component: userSetting
+      }, {
+        name: "我的帖子",
+        path: 'myArticle/:uid',
+        component: myArticle
+      }, {
+        name: "我的收藏",
+        path: 'myStar/:uid',
+        component: myStar
+      }, {
+        name: "好友",
+        path: 'friend/:uid'
       }
-
     ]
   }, {
     path: '/login',

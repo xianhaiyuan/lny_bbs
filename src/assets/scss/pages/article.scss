@@ -109,11 +109,17 @@
       }
     }
   }
+  .u-btn {
+    text-align: right;
+  }
   .u-submit {
-    float: right;
     margin-top: 20px;
   }
   .m-reply {
     margin-top: 30px;
+  }
+  .el-pagination {
+    text-align: right;
+    padding: 20px 0;
   }
 }
