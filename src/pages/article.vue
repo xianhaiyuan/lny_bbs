@@ -14,7 +14,8 @@
       <div class="m-box">
         <el-row class="m-head">
           <el-col :span="4">
-            <div class="grid-box-head">
+            <div class="grid-box-head m-userid">
+              用户ID：123
             </div>
           </el-col>
           <el-col :span="20">

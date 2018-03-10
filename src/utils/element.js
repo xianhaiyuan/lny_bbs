@@ -32,12 +32,15 @@ import {
   Option,
   OptionGroup,
   Upload,
-  Dialog
+  Dialog,
+  Tabs,
+  TabPane,
 } from 'element-ui';
 Vue.prototype.$ELEMENT = {
   size: 'small'
 }
-
+Vue.component(Tabs.name, Tabs)
+Vue.component(TabPane.name, TabPane)
 Vue.component(Dialog.name, Dialog)
 Vue.component(Upload.name, Upload)
 Vue.component(Select.name, Select)

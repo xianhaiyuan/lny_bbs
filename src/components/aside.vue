@@ -40,6 +40,11 @@ export default {
           name: "我的收藏",
           a_url: "/myStar",
           img_name: "icon-star"
+        },
+        {
+          name: "版块管理",
+          a_url: "/sectionManager",
+          img_name: "icon-sectionManager"
         }
       ]
     };

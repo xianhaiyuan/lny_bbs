@@ -10,6 +10,9 @@ import publish from '@/pages/publish'
 import userSetting from '@/pages/userSetting'
 import myArticle from '@/pages/myArticle'
 import myStar from '@/pages/myStar'
+import accuse from '@/pages/accuse'
+import sectionManager from '@/pages/sectionManager'
+import checkUser from '@/pages/checkUser'
 
 Vue.use(Router)
 
@@ -60,6 +63,19 @@ let router = new Router({
       }, {
         name: "好友",
         path: 'friend/:uid'
+      }, {
+        name: "举报",
+        path: 'accuse',
+        component: accuse
+      },
+      {
+        name: "版块管理",
+        path: 'sectionManager',
+        component: sectionManager
+      }, {
+        name: "检测用户",
+        path: 'sectionManager/checkUser/:uid',
+        component: checkUser
       }
     ]
   }, {

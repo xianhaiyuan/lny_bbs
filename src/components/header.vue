@@ -16,6 +16,9 @@
           <el-dropdown-item v-if="!user">
             <router-link to="/sign">注册</router-link>
           </el-dropdown-item>
+          <el-dropdown-item v-if="user">
+            <router-link to="/accuse">举报用户</router-link>
+          </el-dropdown-item>
           <el-dropdown-item v-if="user" divided>
             <div @click="unLogin">退出登录</div>
           </el-dropdown-item>
