@@ -1,14 +1,14 @@
 <template>
   <div class="g-sign">
     <el-form :model="signForm" status-icon :rules="rules" ref="signForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="用户名" prop="username" size="small" required>
+      <el-form-item label="用户名" prop="username" size="small">
         <el-input type="text" v-model="signForm.username" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="password" size="small" required>
-        <el-input type="password" v-model="signForm.password" auto-complete="off"></el-input>
+      <el-form-item label="密码" prop="passwd" size="small">
+        <el-input type="password" v-model="signForm.passwd" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="昵称" prop="name" size="small" required>
-        <el-input type="text" v-model="signForm.name" auto-complete="off"></el-input>
+      <el-form-item label="昵称" prop="nickname" size="small">
+        <el-input type="text" v-model="signForm.nickname" auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="年级" prop="grade">
         <el-select v-model="signForm.grade" placeholder="请选择你的年级">
@@ -70,18 +70,20 @@ export default {
     };
     return {
       signForm: {
-        password: "",
+        passwd: "",
         username: "",
-        name: "",
+        nickname: "",
         grade: "",
         sex: "",
         email: "",
         birthday: ""
       },
       rules: {
-        password: [{ validator: validatePass, trigger: "blur" }],
-        username: [{ validator: validateUsername, trigger: "blur" }],
-        name: [{ validator: validatName, trigger: "blur" }],
+        passwd: [{ required: true, validator: validatePass, trigger: "blur" }],
+        username: [
+          { required: true, validator: validateUsername, trigger: "blur" }
+        ],
+        nickname: [{ required: true, validator: validatName, trigger: "blur" }],
         email: [
           { type: "email", message: "请输入正确的邮箱地址", triger: "blur" },
           { required: true, message: "请输入邮箱地址", trigger: "blur" }
@@ -107,7 +109,26 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          api
+            .ajax("signUp", this[formName], "post")
+            .then(
+              response => {
+                if (response >= 1) {
+                  this.$alert("注册成功", "成功", {
+                    confirmButtonText: "确定",
+                    callback: () => {
+                      this.$router.push({ name: "登录" });
+                    }
+                  });
+                }
+              },
+              err => {
+                console.log(err);
+              }
+            )
+            .catch(err => {
+              console.log(err);
+            });
         } else {
           MessageBox.alert("错误", "注册失败", "请输入完整信息");
           return false;

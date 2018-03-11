@@ -103,6 +103,8 @@
   .u-star {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
     &:hover {
       cursor: pointer;
     }
@@ -117,6 +119,20 @@
       a {
         padding-left: 3px;
         color: blue;
+      }
+    }
+  }
+  .u-praise-blame {
+    height: 25px;
+    padding-left: 15px;
+    .el-col {
+      height: 100%;
+      align-items: center;
+      display: flex;
+      img {
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }

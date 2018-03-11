@@ -15,11 +15,13 @@
     </el-dialog>
     <div class="m-contain">
       <el-row class="m-tit">
-        <el-col :span="23">
+        <el-col :span="22">
           <div class="grid-box-tit">文章主题：</div>
         </el-col>
-        <el-col :span="1">
-          <div class="grid-box-tit u-star"><img src="../assets/img/star.png" alt="收藏帖子"></div>
+        <el-col :span="2">
+          <div class="grid-box-tit u-star"><img src="../assets/img/star.png" alt="收藏帖子">
+            <!-- <div>已收藏</div> -->
+          </div>
         </el-col>
       </el-row>
       <div class="m-box">
@@ -91,7 +93,16 @@
             </div>
           </el-col>
           <el-col :span="20">
-            <div class="grid-box-foot u-border-left"></div>
+            <div class="grid-box-foot u-border-left">
+              <el-row class="u-praise-blame">
+                <el-col :span="2">
+                  <img src="../assets/img/praise.png" alt="" style="margin-bottom: 4px;">123
+                </el-col>
+                <el-col :span="2">
+                  <img src="../assets/img/blame.png" alt="">11
+                </el-col>
+              </el-row>
+            </div>
           </el-col>
         </el-row>
       </div>
