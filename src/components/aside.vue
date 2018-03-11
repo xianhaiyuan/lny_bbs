@@ -45,6 +45,11 @@ export default {
           name: "版块管理",
           a_url: "/sectionManager",
           img_name: "icon-sectionManager"
+        },
+        {
+          name: "版块增删",
+          a_url: "/sectionAdmin",
+          img_name: "icon-addSection"
         }
       ]
     };

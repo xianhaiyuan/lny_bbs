@@ -13,6 +13,8 @@ import myStar from '@/pages/myStar'
 import accuse from '@/pages/accuse'
 import sectionManager from '@/pages/sectionManager'
 import checkUser from '@/pages/checkUser'
+import addSection from '@/pages/addSection'
+import userInfo from '@/pages/userInfo'
 
 Vue.use(Router)
 
@@ -76,6 +78,16 @@ let router = new Router({
         name: "检测用户",
         path: 'sectionManager/checkUser/:uid',
         component: checkUser
+      },
+      {
+        name: "版块增删",
+        path: 'addSection',
+        component: addSection
+      },
+      {
+        name: "用户信息",
+        path: 'userInfo/:uid',
+        component: userInfo
       }
     ]
   }, {

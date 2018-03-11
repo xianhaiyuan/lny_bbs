@@ -84,14 +84,21 @@
       }
     }
   }
-  .m-floor {
+  .u-floor {
     height: 25px;
     line-height: 25px;
-    align-items: center;
+    text-align: center;
     font-weight: 700;
-    text-align: right;
-    padding-right: 10px;
     color: rgb(98, 98, 253);
+  }
+  .u-replyOne {
+    height: 25px;
+    line-height: 25px;
+    padding-left: 16px;
+    color: rgb(98, 98, 253);
+    &:hover {
+      cursor: pointer;
+    }
   }
   .u-star {
     display: flex;

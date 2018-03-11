@@ -2,6 +2,17 @@
   <!-- <div class="article">this is article{{ $route.params.id }} </div>
    -->
   <div class="m-article">
+    <el-dialog title="回复" :visible.sync="dialogReplyVisible">
+      <div class="m-edit">
+        <quill-editor ref="myTextEditor" v-model="replyOne" :options="editorOption">
+        </quill-editor>
+        <div class="u-btn">
+          <el-button class="u-submit" type="primary">提交
+            <i class="el-icon-upload el-icon--right"></i>
+          </el-button>
+        </div>
+      </div>
+    </el-dialog>
     <div class="m-contain">
       <el-row class="m-tit">
         <el-col :span="23">
@@ -20,7 +31,14 @@
           </el-col>
           <el-col :span="20">
             <div class="grid-box-head u-border-left">
-              <div class="m-floor">楼主</div>
+              <el-row>
+                <el-col :span="2" class="u-replyOne">
+                  <div @click="handleReplyDialog">回复</div>
+                </el-col>
+                <el-col :span="1" :offset="21" class="u-floor">
+                  <div>楼主</div>
+                </el-col>
+              </el-row>
             </div>
           </el-col>
         </el-row>
@@ -59,7 +77,7 @@
               <el-row class="m-func">
                 <el-col :span="8">
                   <img src="../assets/img/scan.png" alt="">
-                  <a href="#">查看</a>
+                  <router-link :to="{name:'用户信息',params:{uid: 1}}">查看</router-link>
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/msg.png" alt="">
@@ -118,6 +136,8 @@ export default {
       ["clean"] // remove formatting button
     ];
     return {
+      dialogReplyVisible: false,
+      replyOne: "",
       content:
         "<p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p>",
       reply: "",
@@ -150,6 +170,10 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+    },
+    handleReplyDialog() {
+      console.log("aaa");
+      this.dialogReplyVisible = true;
     }
   },
   components: {
