@@ -22,11 +22,10 @@ axios.interceptors.request.use((config) => {
 
 //返回状态判断
 axios.interceptors.response.use((res) => {
-  if (!res.data) {
-    // _.toast(res.data.msg);
-    MessageBox.alert("错误", "获取不到数据", "请检查服务器返回值")
-    return Promise.reject(res);
-  }
+  // if (!res.data) {
+  //   MessageBox.alert("错误", "获取不到数据", "请检查服务器返回值")
+  //   return Promise.reject(res);
+  // }
   return res;
 }, (error) => {
   MessageBox.alert("错误", "网络异常", "请检查服务器连接")

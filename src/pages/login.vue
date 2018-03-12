@@ -11,8 +11,8 @@
           <el-form-item prop="username" size="mini">
             <el-input type="text" v-model="userForm.username" auto-complete="true" autofocus placeholder="请输入用户名"></el-input>
           </el-form-item>
-          <el-form-item prop="pass" size="mini">
-            <el-input type="password" v-model="userForm.pass" auto-complete="false" placeholder="请输入密码"></el-input>
+          <el-form-item prop="passwd" size="mini">
+            <el-input @keydown.enter.native="login($event)" type="password" v-model="userForm.passwd" auto-complete="false" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-form-item size="mini">
             <el-button type="primary" @click="submitForm_Login('userForm')">登录</el-button>
@@ -59,11 +59,11 @@ export default {
     return {
       userForm: {
         username: "",
-        pass: ""
+        passwd: ""
       },
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
-        pass: [{ validator: validatePass, trigger: "blur" }]
+        passwd: [{ validator: validatePass, trigger: "blur" }]
       },
       userid: 1
     };
@@ -72,19 +72,24 @@ export default {
     vFooter
   },
   methods: {
+    login() {
+      this.submitForm_Login("userForm");
+    },
     submitForm_Login(formName) {
       this.$refs[formName].validate(valid => {
-        this.$session.set("user", { username: "lisi", age: 20 });
         if (valid) {
           api
-            .ajax("/login/post", this[formName], "post")
+            .ajax("/login/get", this[formName])
             .then(res => {
-              console.log(res);
-              // this.$session.set("user", { username: "lisi", age: 20 });
-              this.$router.push({
-                name: "首页",
-                query: { userid: this.userid }
-              });
+              if (res) {
+                this.$session.set("user", res);
+                this.$router.push({
+                  name: "首页",
+                  query: { userid: this.userid }
+                });
+              } else {
+                MessageBox.alert("失败", "登录失败,请检查用户和密码");
+              }
             })
             .catch(err => {
               console.log(err);

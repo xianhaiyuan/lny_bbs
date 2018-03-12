@@ -110,7 +110,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           api
-            .ajax("signUp", this[formName], "post")
+            .ajax("signUp/post", this[formName], "post")
             .then(
               response => {
                 if (response >= 1) {
