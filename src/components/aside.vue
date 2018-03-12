@@ -4,9 +4,15 @@
     <div class="m-userinfo">
       <div class="m-avatar"></div>
       <ul>
-        <li>昵称:lisi</li>
-        <li>文章:10</li>
-        <li>性别:男</li>
+        <li>昵称:
+          <span v-if="this.$session.get('user')">{{this.$session.get('user').nickname}}</span>
+        </li>
+        <li>文章:
+          <span v-if="this.$session.get('user')">{{this.$session.get('user').article_count}}</span>
+        </li>
+        <li>性别:
+          <span v-if="this.$session.get('user')">{{this.$session.get('user').sex}}</span>
+        </li>
       </ul>
     </div>
     <div class="m-nav">

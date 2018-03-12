@@ -7,19 +7,19 @@
           <img src="../assets/img/icon-setting.png" alt="">
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-if="user">
-            <router-link :to="{name: '用户设置',params: {uid: 1}}">用户设置 </router-link>
+          <el-dropdown-item v-if="this.$session.get('user')">
+            <router-link :to="{name: '用户设置'}">用户设置 </router-link>
           </el-dropdown-item>
-          <el-dropdown-item v-if="!user">
+          <el-dropdown-item v-if="!this.$session.get('user')">
             <router-link to="/login">登录</router-link>
           </el-dropdown-item>
-          <el-dropdown-item v-if="!user">
+          <el-dropdown-item v-if="!this.$session.get('user')">
             <router-link to="/sign">注册</router-link>
           </el-dropdown-item>
-          <el-dropdown-item v-if="user">
+          <el-dropdown-item v-if="this.$session.get('user')">
             <router-link to="/accuse">举报用户</router-link>
           </el-dropdown-item>
-          <el-dropdown-item v-if="user" divided>
+          <el-dropdown-item v-if="this.$session.get('user')" divided>
             <div @click="unLogin">退出登录</div>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -28,18 +28,29 @@
   </div>
 </template>
 <script>
+import api from "../api/api";
 export default {
   data() {
-    return {
-      user: this.$session.get("user")
-    };
+    return {};
   },
   methods: {
     unLogin() {
+      api
+        .ajax("unLogin/post", { id: this.$session.get("user").id }, "post")
+        .then(res => {
+          if (res > 0) {
+            console.log("退出登录");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
       this.$session.remove("user");
-      this.user = null;
-      console.log(this.$session.get("user"));
+      this.$router.push({ name: "登录" });
     }
+  },
+  created() {
+    console.log(this.$session.get("user"));
   }
 };
 </script>

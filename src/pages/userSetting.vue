@@ -3,13 +3,14 @@
     <el-form :model="settingForm" status-icon :rules="rules" ref="settingForm" label-width="100px" class="demo-ruleForm">
       <el-form-item label="头像">
         <div class="el-upload el-upload--picture-card" @click="avatar_click">
-          <i v-show="!settingForm.picFile" class=" el-icon-plus"></i>
-          <img v-show="settingForm.picFile" width="100%" :src="settingForm.picFile" alt="">
-          <input type="file" @change="onFileChange($event)" ref="inputFile" class="el-upload__input">
+          <img v-if="dialogVisible" width="100%" :src="dialogImageUrl" alt="">
+          <img v-else-if="settingForm.avatar" width="100%" :src="settingForm.avatar" alt="">
+          <i v-else class="el-icon-plus"></i>
+          <input type="file" @change="onFileChange($event)" ref="avatar" class="el-upload__input">
         </div>
       </el-form-item>
-      <el-form-item label="昵称" prop="name" size="small" required>
-        <el-input type="text" v-model="settingForm.name" auto-complete="off"></el-input>
+      <el-form-item label="昵称" prop="nickname" size="small" required>
+        <el-input type="text" v-model="settingForm.nickname" auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="年级" prop="grade">
         <el-select v-model="settingForm.grade" placeholder="请选择你的年级">
@@ -35,13 +36,14 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('settingForm')">提交</el-button>
-        <el-button @click="resetForm('settingForm')">重置</el-button>
+        <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import api from "../api/api";
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
 const { mapActions } = createNamespacedHelpers("routeStore");
@@ -55,17 +57,20 @@ export default {
       }
     };
     return {
-      settingForm: {
-        name: "",
-        grade: "",
-        sex: "",
-        email: "",
-        birthday: "",
-        picFile: ""
-      },
-
+      // settingForm: {
+      //   nickname: "",
+      //   grade: "",
+      //   sex: "",
+      //   email: "",
+      //   birthday: "",
+      //   avatar: ""
+      // },
+      picFile: "",
+      dialogImageUrl: "",
+      dialogVisible: false,
+      settingForm: this.$session.get("user"),
       rules: {
-        name: [{ validator: validatName, trigger: "blur" }],
+        nickname: [{ validator: validatName, trigger: "blur" }],
         email: [
           { type: "email", message: "请输入正确的邮箱地址", triger: "blur" },
           { required: true, message: "请输入邮箱地址", trigger: "blur" }
@@ -95,40 +100,82 @@ export default {
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
+      this.picFile = e.target.files[0];
       this.createImage(files);
     },
     createImage(file) {
       let reader = new window.FileReader();
       reader.readAsDataURL(file[0]);
       reader.onload = e => {
-        this.settingForm.picFile = e.target.result;
+        this.dialogImageUrl = e.target.result;
+        this.dialogVisible = true;
       };
     },
     avatar_click() {
-      this.$refs.inputFile.dispatchEvent(new MouseEvent("click"));
+      this.$refs.avatar.dispatchEvent(new MouseEvent("click"));
     },
     ...mapActions(["setRouteList"]),
     submitForm(formName) {
+      event.preventDefault();
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          let formData = new FormData();
+          formData.append("id", this[formName].id);
+          formData.append("picFile", this.picFile);
+          formData.append("nickname", this[formName].nickname);
+          formData.append("grade", this[formName].grade);
+          formData.append("email", this[formName].email);
+          formData.append("sex", this[formName].sex);
+          formData.append("birthday", this[formName].birthday);
+          formData.append("avatar", this[formName].avatar);
+          if (this.picFile) {
+            api
+              .upload("userSettingAvatar/post", formData)
+              .then(res => {
+                if (res) {
+                  this.$session.set("user", res);
+                  MessageBox.alert("成功", "个人信息修改成功");
+                } else {
+                  MessageBox.alert("失败", "个人信息修改失败");
+                }
+                console.log(res);
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          } else {
+            api
+              .ajax("userSetting/post", this.settingForm, "post")
+              .then(res => {
+                if (res) {
+                  this.$session.set("user", res);
+                  MessageBox.alert("成功", "个人信息修改成功");
+                } else {
+                  MessageBox.alert("失败", "个人信息修改失败");
+                }
+                console.log(res);
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
         } else {
           MessageBox.alert("错误", "注册失败", "请输入完整信息");
           return false;
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    cancel() {
+      this.$router.go(-1);
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-      console.log(file);
     }
+    // handlePictureCardPreview(file) {
+    //   this.dialogImageUrl = file.url;
+    //   this.dialogVisible = true;
+    //   console.log(file);
+    // }
   }
 };
 </script>

@@ -79,13 +79,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           api
-            .ajax("/login/get", this[formName])
+            .ajax("login/post", this[formName], "post")
             .then(res => {
               if (res) {
                 this.$session.set("user", res);
                 this.$router.push({
-                  name: "首页",
-                  query: { userid: this.userid }
+                  name: "首页"
                 });
               } else {
                 MessageBox.alert("失败", "登录失败,请检查用户和密码");

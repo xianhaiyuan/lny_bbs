@@ -52,7 +52,7 @@ let router = new Router({
         component: publish
       }, {
         name: "用户设置",
-        path: 'index/user/:uid/setting',
+        path: 'index/user/setting',
         component: userSetting
       }, {
         name: "我的帖子",
