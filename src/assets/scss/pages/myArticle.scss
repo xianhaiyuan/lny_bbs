@@ -1,25 +1,20 @@
 .m-myArticle {
   padding: 10px 30px;
-}
-
-.el-pagination {
-  text-align: right;
-  padding: 20px 0;
-}
-
-.m-edit {
-  padding: 20px;
-}
-
-.u-btn {
-  text-align: right;
-}
-
-.u-submit {
-  margin-top: 20px;
-}
-
-.el-input {
-  width: 100%;
-  margin-bottom: 16px;
+  .el-pagination {
+    text-align: right;
+    padding: 20px 0;
+  }
+  .m-edit {
+    padding: 20px;
+  }
+  .u-btn {
+    text-align: right;
+  }
+  .u-submit {
+    margin-top: 10px;
+  }
+  .el-input {
+    width: 100%;
+    margin-bottom: 16px;
+  }
 }

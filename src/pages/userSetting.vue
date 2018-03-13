@@ -132,13 +132,22 @@ export default {
             api
               .upload("userSettingAvatar/post", formData)
               .then(res => {
-                if (res) {
-                  this.$session.set("user", res);
-                  MessageBox.alert("成功", "个人信息修改成功");
-                } else {
+                if (!res) {
                   MessageBox.alert("失败", "个人信息修改失败");
+                  return;
                 }
-                console.log(res);
+                if (res.id == -1) {
+                  this.$alert("长时间无操作,用户过时,请重新登录", "失败", {
+                    confirmButtonText: "确定",
+                    callback: () => {
+                      this.$router.push({ name: "登录" });
+                    }
+                  });
+                  this.$session.remove("user");
+                  return;
+                }
+                this.$session.set("user", res);
+                MessageBox.alert("成功", "个人信息修改成功");
               })
               .catch(err => {
                 console.log(err);
@@ -147,13 +156,23 @@ export default {
             api
               .ajax("userSetting/post", this.settingForm, "post")
               .then(res => {
-                if (res) {
-                  this.$session.set("user", res);
-                  MessageBox.alert("成功", "个人信息修改成功");
-                } else {
+                if (!res) {
                   MessageBox.alert("失败", "个人信息修改失败");
+                  return;
                 }
-                console.log(res);
+                if (res.id == -1) {
+                  this.$alert("长时间无操作,用户过时,请重新登录", "失败", {
+                    confirmButtonText: "确定",
+                    callback: () => {
+                      this.$router.push({ name: "登录" });
+                    }
+                  });
+                  this.$session.remove("user");
+                  return;
+                }
+
+                this.$session.set("user", res);
+                MessageBox.alert("成功", "个人信息修改成功");
               })
               .catch(err => {
                 console.log(err);

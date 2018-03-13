@@ -1,8 +1,14 @@
 .m-sectionManager {
   padding: 10px 30px;
-}
-
-.el-pagination {
-  text-align: right;
-  padding: 20px 0;
+  .el-input {
+    margin-bottom: 10px;
+  }
+  .el-pagination {
+    text-align: right;
+    padding: 20px 0;
+  }
+  .u-btn {
+    text-align: right;
+    margin-top: 10px;
+  }
 }
