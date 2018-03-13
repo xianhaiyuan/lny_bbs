@@ -31,7 +31,9 @@
 import api from "../api/api";
 export default {
   data() {
-    return {};
+    return {
+      touristCount: 0
+    };
   },
   methods: {
     unLogin() {
@@ -48,9 +50,6 @@ export default {
       this.$session.remove("user");
       this.$router.push({ name: "登录" });
     }
-  },
-  created() {
-    console.log(this.$session.get("user"));
   }
 };
 </script>

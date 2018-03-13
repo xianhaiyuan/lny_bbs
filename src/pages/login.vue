@@ -26,10 +26,8 @@
         </el-form>
       </div>
       <div class="m-count">
-        当前总共在线人数:
-        <span class="u-all">1200</span>,注册用户:
-        <span class="u-user">12</span>,游客:
-        <span class="u-tourist">10</span>
+        当前总共在线用戶:
+        <span class="u-user">{{this.onlineCount}}</span>
       </div>
     </div>
     <div class="g-ft">
@@ -57,6 +55,7 @@ export default {
       callback();
     };
     return {
+      onlineCount: 0,
       userForm: {
         username: "",
         passwd: ""
@@ -64,14 +63,26 @@ export default {
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
         passwd: [{ validator: validatePass, trigger: "blur" }]
-      },
-      userid: 1
+      }
     };
+  },
+  created() {
+    this.getOnlineCount();
   },
   components: {
     vFooter
   },
   methods: {
+    getOnlineCount() {
+      api
+        .ajax("onlineCount/get", {})
+        .then(res => {
+          this.onlineCount = res;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     login() {
       this.submitForm_Login("userForm");
     },
