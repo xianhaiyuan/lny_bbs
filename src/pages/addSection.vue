@@ -25,53 +25,31 @@
         </div>
       </div>
     </el-dialog>
-    <el-tabs tab-position="top" style="height: 200px;">
-      <el-tab-pane label="首页版块">
-        <div class="block">
-          <el-table :data="sectionData" style="width: 100%" stripe>
-            <el-table-column label="版块名称" width="600">
-              <template slot-scope="scope">
-                {{scope.row.name}}
-              </template>
-            </el-table-column>
+    <div class="block">
+      <el-table :data="sectionData" style="width: 100%" stripe>
+        <el-table-column label="版块名称" width="600">
+          <template slot-scope="scope">
+            {{scope.row.name}}
+          </template>
+        </el-table-column>
 
-            <el-table-column label="版块标签" width="353">
-              <template slot-scope="scope">
-                {{scope.row.label}}
-              </template>
-            </el-table-column>
+        <el-table-column label="版块标签" width="353">
+          <template slot-scope="scope">
+            {{scope.row.label}}
+          </template>
+        </el-table-column>
 
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
-          </el-pagination>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="用户管理">
-        <div class="block">
-          <el-table :data="userData" style="width: 100%" stripe>
-            <el-table-column label="被封号的用户" width="953">
-              <template slot-scope="scope">
-                {{scope.row.username}}
-              </template>
-            </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+      </el-pagination>
+    </div>
 
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button size="mini" @click="handleRelease(scope.$index, scope.row)">解封</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
-          </el-pagination>
-        </div>
-      </el-tab-pane>
-    </el-tabs>
   </div>
 </template>
 

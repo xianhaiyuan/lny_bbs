@@ -15,6 +15,8 @@ import sectionManager from '@/pages/sectionManager'
 import checkUser from '@/pages/checkUser'
 import addSection from '@/pages/addSection'
 import userInfo from '@/pages/userInfo'
+import userManager from '@/pages/userManager'
+
 
 Vue.use(Router)
 
@@ -88,6 +90,10 @@ let router = new Router({
         name: "用户信息",
         path: 'userInfo/:uid',
         component: userInfo
+      }, {
+        name: "用户管理",
+        path: "userManager",
+        component: userManager
       }
     ]
   }, {
