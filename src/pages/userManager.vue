@@ -3,10 +3,16 @@
     <el-tabs tab-position="top" style="height: 200px;">
       <el-tab-pane label="权限管理">
         <div class="block">
-          <el-table :data="userAuthority" style="width: 100%" stripe>
-            <el-table-column label="用户" width="230">
+          <el-table :data="userSectionPage.pageData" style="width: 100%" stripe>
+            <el-table-column label="用户名" width="130">
               <template slot-scope="scope">
                 {{scope.row.username}}
+              </template>
+            </el-table-column>
+
+            <el-table-column label="昵称" width="200">
+              <template slot-scope="scope">
+                {{scope.row.nickname}}
               </template>
             </el-table-column>
 
@@ -20,9 +26,9 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="版块名称" width="423">
+            <el-table-column label="版块名称" width="323">
               <template slot-scope="scope">
-                <el-input placeholder="请输入版块名称" :disabled="scope.row.position != '版主'" v-model="sec_name"></el-input>
+                <el-input placeholder="请输入版块名称" v-model="scope.row.section.sec_name" :disabled="scope.row.position != '版主'"></el-input>
               </template>
             </el-table-column>
 
@@ -32,7 +38,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="userSectionPage.pageSize" layout="prev, pager, next, jumper" :total="userSectionPage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -62,11 +68,13 @@
 <script>
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
+import api from "../api/api";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
     return {
       sec_name: "",
+      userSectionPage: [],
       userAuthority: [
         {
           username: "李四子",
@@ -88,6 +96,13 @@ export default {
     };
   },
   created() {
+    api
+      .ajax("userSectionPage/get", { currentPage: 1 })
+      .then(res => {
+        console.log(res);
+        this.userSectionPage = res;
+      })
+      .catch(err => console.log(err));
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -95,11 +110,55 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
-    handleAuthority(index, row) {},
+    handleAuthority(index, row) {
+      console.log(row);
+      if (row.position != "版主") {
+        api
+          .ajax(
+            "changeUserPosition/post",
+            { id: row.id, position: row.position },
+            "post"
+          )
+          .then(res => {
+            if (res > 0) {
+              MessageBox.alert("成功", "提交成功");
+            } else {
+              MessageBox.alert("失败", "失败");
+            }
+          })
+          .catch(err => console.log(err));
+      } else {
+        api
+          .ajax(
+            "changeUserPositionSection/post",
+            {
+              id: row.id,
+              position: row.position,
+              sec_name: row.section.sec_name
+            },
+            "post"
+          )
+          .then(res => {
+            if (res > 0) {
+              MessageBox.alert("成功", "提交成功");
+            } else {
+              MessageBox.alert("失败", "失败");
+            }
+          })
+          .catch(err => console.log(err));
+      }
+    },
     handleSizeChange1(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
+      api
+        .ajax("userSectionPage/get", { currentPage: val })
+        .then(res => {
+          console.log(res);
+          this.userSectionPage = res;
+        })
+        .catch(err => console.log(err));
       console.log(`当前页: ${val}`);
     }
   }
