@@ -5,10 +5,10 @@
     </div>
     <el-dialog title="增加版块" :visible.sync="dialogAddVisible">
       <div class="m-edit">
-        <el-input style="margin-bottom: 15px;" autofocus placeholder="请输入版块名称"></el-input>
-        <el-input style="margin-bottom: 15px;" placeholder="请输入版块标签"></el-input>
+        <el-input style="margin-bottom: 15px;" v-model="addSectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
+        <el-input style="margin-bottom: 15px;" @keydown.enter.native="addFormSubmit" v-model="addSectionForm.sec_label" placeholder="请输入版块标签"></el-input>
         <div class="u-btn">
-          <el-button class="u-submit" type="primary" @click="showContent">提交
+          <el-button class="u-submit" type="primary" @click="addFormSubmit">提交
             <i class="el-icon-upload el-icon--right"></i>
           </el-button>
         </div>
@@ -16,8 +16,8 @@
     </el-dialog>
     <el-dialog title="编辑版块" :visible.sync="dialogEditVisible">
       <div class="m-edit">
-        <el-input style="margin-bottom: 15px;" v-model="sectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
-        <el-input style="margin-bottom: 15px;" v-model="sectionForm.sec_label" placeholder="请输入版块标签"></el-input>
+        <el-input style="margin-bottom: 15px;" v-model="editSectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
+        <el-input style="margin-bottom: 15px;" @keydown.enter.native="editFormSubmit" v-model="editSectionForm.sec_label" placeholder="请输入版块标签"></el-input>
         <div class="u-btn">
           <el-button class="u-submit" type="primary" @click="editFormSubmit">提交
             <i class="el-icon-upload el-icon--right"></i>
@@ -61,30 +61,14 @@ import api from "../api/api";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
-    let toolbarOptions = [
-      ["bold", "italic", "underline", "strike"], // toggled buttons
-      ["blockquote", "code-block"],
-
-      [{ header: 1 }, { header: 2 }], // custom button values
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ script: "sub" }, { script: "super" }], // superscript/subscript
-      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-      [{ direction: "rtl" }], // text direction
-
-      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-      [{ font: [] }],
-      [{ align: [] }],
-      ["link", "image"],
-      ["clean"] // remove formatting button
-    ];
     return {
-      sectionForm: {
-        id: "",
+      addSectionForm: {
         sec_name: "",
         sec_label: ""
+      },
+      editSectionForm: {},
+      deleteSectionForm: {
+        id: -1
       },
       dialogAddVisible: false,
       dialogEditVisible: false,
@@ -113,44 +97,73 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
-    editFormSubmit() {},
+    editFormSubmit() {
+      api
+        .ajax("sectionChange/post", this.editSectionForm, "post")
+        .then(res => {
+          if (res > 0) {
+            MessageBox.alert("成功", "提交成功");
+          } else {
+            MessageBox.alert("失败", "提交失败");
+          }
+          this.dialogEditVisible = false;
+        })
+        .catch(err => console.log(err));
+    },
     handleSizeChange1(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
+      console.log(val);
       api
         .ajax("sectionPage/get", { currentPage: val })
         .then(res => {
-          console.log(res);
           this.sectionPage = res;
         })
         .catch(err => console.log(err));
     },
     handleDelete(index, row) {
-      console.log(index);
-      console.log(row.aid);
+      this.deleteSectionForm.id = row.id;
+      api
+        .ajax("deleteSection/post", this.deleteSectionForm, "post")
+        .then(res => {
+          if (res > 0) {
+            this.$alert("删除成功", "成功", {
+              confirmButtonText: "确定",
+              callback: () => {
+                this.$router.go(0);
+              }
+            });
+          } else {
+            MessageBox.alert("失败", "删除失败");
+          }
+          this.dialogAddVisible = false;
+        });
     },
     handleAdd(index, row) {
       this.dialogAddVisible = true;
-      console.log(index, row);
     },
     handleEdit(index, row) {
-      console.log(row.id);
-      this.sectionForm.sec_id = row.sec_id;
-      this.sectionForm.sec_name = row.sec_name;
-      this.sectionForm.sec_label = row.sec_label;
+      this.editSectionForm = row;
       this.dialogEditVisible = true;
     },
     handleRelease(index, row) {
       console.log(index);
     },
-    onEditorChange({ editor, html, text }) {
-      // console.log('editor change!', editor, html, text)
-      this.content = html;
-      console.log(html);
-    },
-    showContent() {
-      console.log(this.content);
+    addFormSubmit() {
+      api.ajax("addSection/post", this.addSectionForm, "post").then(res => {
+        if (res > 0) {
+          this.$alert("添加成功", "成功", {
+            confirmButtonText: "确定",
+            callback: () => {
+              this.$router.go(0);
+            }
+          });
+        } else {
+          MessageBox.alert("失败", "添加失败");
+        }
+        this.dialogAddVisible = false;
+      });
     }
   }
 };
