@@ -52,7 +52,7 @@
           </el-pagination>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="用户管理">
+      <el-tab-pane label="用户封号">
         <div class="block">
           <el-table :data="userData" style="width: 100%" stripe>
             <el-table-column label="被举报的用户" width="953">

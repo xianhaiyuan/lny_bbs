@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     addClass(index) {
-      console.log(index);
       this.cur = index;
     }
   }

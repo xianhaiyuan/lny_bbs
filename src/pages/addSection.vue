@@ -16,26 +16,26 @@
     </el-dialog>
     <el-dialog title="编辑版块" :visible.sync="dialogEditVisible">
       <div class="m-edit">
-        <el-input style="margin-bottom: 15px;" v-model="sectionName" autofocus placeholder="请输入版块名称"></el-input>
-        <el-input style="margin-bottom: 15px;" placeholder="请输入版块标签">{{this.sectionLabel}}</el-input>
+        <el-input style="margin-bottom: 15px;" v-model="sectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
+        <el-input style="margin-bottom: 15px;" v-model="sectionForm.sec_label" placeholder="请输入版块标签"></el-input>
         <div class="u-btn">
-          <el-button class="u-submit" type="primary" @click="showContent">提交
+          <el-button class="u-submit" type="primary" @click="editFormSubmit">提交
             <i class="el-icon-upload el-icon--right"></i>
           </el-button>
         </div>
       </div>
     </el-dialog>
     <div class="block">
-      <el-table :data="sectionData" style="width: 100%" stripe>
+      <el-table :data="sectionPage.pageData" style="width: 100%" stripe>
         <el-table-column label="版块名称" width="600">
           <template slot-scope="scope">
-            {{scope.row.name}}
+            {{scope.row.sec_name}}
           </template>
         </el-table-column>
 
         <el-table-column label="版块标签" width="353">
           <template slot-scope="scope">
-            {{scope.row.label}}
+            {{scope.row.sec_label}}
           </template>
         </el-table-column>
 
@@ -46,7 +46,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+
+      <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="sectionPage.pageSize" layout="prev, pager, next, jumper" :total="sectionPage.totalCount">
       </el-pagination>
     </div>
 
@@ -56,6 +57,7 @@
 <script>
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
+import api from "../api/api";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
@@ -79,8 +81,11 @@ export default {
       ["clean"] // remove formatting button
     ];
     return {
-      sectionName: "",
-      sectionLabel: "",
+      sectionForm: {
+        id: "",
+        sec_name: "",
+        sec_label: ""
+      },
       dialogAddVisible: false,
       dialogEditVisible: false,
       userData: [
@@ -91,15 +96,16 @@ export default {
           username: "张三"
         }
       ],
-      sectionData: [
-        {
-          name: "版块name",
-          label: "热门"
-        }
-      ]
+      sectionPage: {}
     };
   },
   created() {
+    api
+      .ajax("sectionPage/get", { currentPage: 1 })
+      .then(res => {
+        this.sectionPage = res;
+      })
+      .catch(err => console.log(err));
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -107,11 +113,18 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
+    editFormSubmit() {},
     handleSizeChange1(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
-      console.log(`当前页: ${val}`);
+      api
+        .ajax("sectionPage/get", { currentPage: val })
+        .then(res => {
+          console.log(res);
+          this.sectionPage = res;
+        })
+        .catch(err => console.log(err));
     },
     handleDelete(index, row) {
       console.log(index);
@@ -122,9 +135,10 @@ export default {
       console.log(index, row);
     },
     handleEdit(index, row) {
-      console.log(row.label);
-      this.sectionLabel = row.label;
-      this.sectionName = row.name;
+      console.log(row.id);
+      this.sectionForm.sec_id = row.sec_id;
+      this.sectionForm.sec_name = row.sec_name;
+      this.sectionForm.sec_label = row.sec_label;
       this.dialogEditVisible = true;
     },
     handleRelease(index, row) {
