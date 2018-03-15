@@ -173,27 +173,31 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
-      api
-        .ajax("articlePageBySid/get", {
-          sid: this.$session.get("section").id,
-          currentPage: val
-        })
-        .then(res => {
-          this.articlePage = res;
-        })
-        .catch(err => console.log(err));
+      if (this.$session.get("section")) {
+        api
+          .ajax("articlePageBySid/get", {
+            sid: this.$session.get("section").id,
+            currentPage: val
+          })
+          .then(res => {
+            this.articlePage = res;
+          })
+          .catch(err => console.log(err));
+      }
     },
     handleSizeChange2(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange2(val) {
-      api
-        .ajax("userAccusePage/get", { currentPage: val })
-        .then(res => {
-          this.userAccusePage = res;
-          console.log(res);
-        })
-        .catch(err => console.log(err));
+      if (this.$session.get("section")) {
+        api
+          .ajax("userAccusePage/get", { currentPage: val })
+          .then(res => {
+            this.userAccusePage = res;
+            console.log(res);
+          })
+          .catch(err => console.log(err));
+      }
     },
     handleDelete(index, row) {
       api.ajax("removeArticleById/post", { id: row.id }, "post").then(res => {
