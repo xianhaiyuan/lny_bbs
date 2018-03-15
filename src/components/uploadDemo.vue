@@ -1,16 +1,16 @@
 <template>
-	<div>
-		<form>
-			<input type="text" value="" v-model="id" placeholder="请输入用户名">
-			<!-- <input type="text" value="" v-model="sex" placeholder="请输入性别"> -->
-			<input type="file" @change="getFile($event)">
-			<button @click="submitForm($event)">提交</button>
-		</form>
-	</div>
+  <div>
+    <form>
+      <input type="text" value="" v-model="id" placeholder="请输入用户名">
+      <!-- <input type="text" value="" v-model="sex" placeholder="请输入性别"> -->
+      <input type="file" @change="getFile($event)">
+      <button @click="submitForm($event)">提交</button>
+    </form>
+  </div>
 </template>
 <script>
 import qs from "querystring";
-import api from "../api/api.js";
+import api from "../api";
 export default {
   name: "index",
   data() {

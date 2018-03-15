@@ -37,7 +37,7 @@
 </template>
 <script>
 import vFooter from "../components/footer";
-import api from "../api/api";
+import api from "../api";
 import MessageBox from "../utils/MessageBox";
 export default {
   name: "v-index",
@@ -92,6 +92,14 @@ export default {
           api
             .ajax("login/post", this[formName], "post")
             .then(res => {
+              if (res.position == "版主") {
+                api
+                  .ajax("sectionByUid/get", { uid: res.id })
+                  .then(res => {
+                    this.$session.set("section", res);
+                  })
+                  .catch(err => console.log(err));
+              }
               if (res) {
                 this.$session.set("user", res);
                 this.$router.push({

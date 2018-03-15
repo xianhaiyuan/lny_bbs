@@ -1,5 +1,3 @@
-import api from '../../api/api.js'
-
 const state = {
 
 }
@@ -17,8 +15,8 @@ const mutations = {
 }
 
 export default {
-	state,
-	actions,
-	getters,
-	mutations
+  state,
+  actions,
+  getters,
+  mutations
 }

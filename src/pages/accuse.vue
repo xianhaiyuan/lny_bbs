@@ -14,6 +14,7 @@
 
 <script>
 import MessageBox from "../utils/MessageBox";
+import api from "../api";
 import { createNamespacedHelpers } from "vuex";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
@@ -45,7 +46,15 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          api
+            .ajax("accuseUser/post", { id: this[formName].userid }, "post")
+            .then(res => {
+              if (res > 0) {
+                MessageBox.alert("成功", "举报成功");
+              } else {
+                MessageBox.alert("失败", "举报失败");
+              }
+            });
         } else {
           console.log("error submit!!");
           return false;

@@ -48,7 +48,7 @@ export default {
           img_name: "icon-star"
         },
         {
-          name: "版块管理",
+          name: "版主管理",
           a_url: "/sectionManager",
           img_name: "icon-sectionManager"
         },

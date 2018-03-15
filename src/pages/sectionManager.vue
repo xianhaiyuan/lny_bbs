@@ -1,43 +1,53 @@
 <template>
   <div class="m-sectionManager">
     <el-tabs tab-position="top" style="height: 200px;">
-      <el-tab-pane label="文章管理">
+      <el-tab-pane label="帖子管理">
         <el-dialog title="编辑帖子" :visible.sync="dialogEditVisible">
           <div class="m-edit">
-            <el-input autofocus v-model="tit" placeholder="请输入帖子主题">{{this.tit}}</el-input>
-            <quill-editor ref="myTextEditor" v-model="content" :options="editorOption">
+            <el-input autofocus v-model="editArticleForm.title" placeholder="请输入帖子主题"></el-input>
+            <el-select v-model="editArticleForm.art_label" placeholder="请选择帖子标签">
+              <el-option label="置顶" value="置顶"></el-option>
+              <el-option label="精华" value="精华"></el-option>
+            </el-select>
+            <quill-editor ref="myTextEditor" v-model="editArticleForm.content" :options="editorOption">
             </quill-editor>
             <div class="u-btn">
-              <el-button class="u-submit" type="primary" @click="showContent">提交
+              <el-button class="u-submit" type="primary" @click="submitEditArticleForm">提交
                 <i class="el-icon-upload el-icon--right"></i>
               </el-button>
             </div>
           </div>
         </el-dialog>
         <div class="block">
-          <el-table :data="articleData" style="width: 100%" stripe>
-            <el-table-column label="主题" width="400">
+          <el-table :data="articlePage.pageData" style="width: 100%" stripe>
+            <el-table-column label="主题" width="350">
               <template slot-scope="scope">
-                <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
+                <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.id }}">{{scope.row.title}}</router-link>
               </template>
             </el-table-column>
 
-            <el-table-column label="发帖时间" width="200">
+            <el-table-column label="发帖时间" width="150">
               <template slot-scope="scope">
                 <i class="el-icon-time"></i>
                 <span style="margin-left: 3px">{{ scope.row.date }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="作者">
+            <el-table-column label="作者" width="100">
               <template slot-scope="scope">
-                <span>{{ scope.row.name }}</span>
+                <span>{{ scope.row.author }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="回复">
+            <el-table-column label="回复" width="100">
               <template slot-scope="scope">
-                <span @click="handleDelete(scope.$index, scope.row)">{{ scope.row.commentCount }}</span>
+                <span @click="handleDelete(scope.$index, scope.row)">{{ scope.row.reply_count }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="帖子标签">
+              <template slot-scope="scope">
+                <span>{{scope.row.art_label}}</span>
               </template>
             </el-table-column>
 
@@ -48,16 +58,22 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
       <el-tab-pane label="用户封号">
         <div class="block">
-          <el-table :data="userData" style="width: 100%" stripe>
-            <el-table-column label="被举报的用户" width="953">
+          <el-table :data="userAccusePage.pageData" style="width: 100%" stripe>
+            <el-table-column label="被举报的用户名" width="200">
               <template slot-scope="scope">
                 <router-link :to="{ name:'检测用户', params: { uid: 1 }}">{{scope.row.username}}</router-link>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="昵称" width="753">
+              <template slot-scope="scope">
+                <router-link :to="{ name:'检测用户', params: { uid: 1 }}">{{scope.row.nickname}}</router-link>
               </template>
             </el-table-column>
 
@@ -68,7 +84,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="userAccusePage.pageSize" layout="prev, pager, next, jumper" :total="userAccusePage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -79,6 +95,7 @@
 <script>
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
+import api from "../api";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
@@ -102,56 +119,37 @@ export default {
       ["clean"] // remove formatting button
     ];
     return {
+      editArticleForm: {},
+      articlePage: {},
+      userAccusePage: {},
       content: "<h2>I am Example</h2>",
-      tit: "",
+      title: "",
       editorOption: {
         modules: {
           toolbar: toolbarOptions
         }
       },
-      dialogEditVisible: false,
-      userData: [
-        {
-          username: "李四"
-        },
-        {
-          username: "张三"
-        }
-      ],
-      articleData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          tit:
-            "上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄",
-          commentCount: 1,
-          aid: 1
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
-          commentCount: 2,
-          aid: 2
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
-          commentCount: 2,
-          aid: 3
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
-          commentCount: 2,
-          aid: 12
-        }
-      ]
+      dialogEditVisible: false
     };
   },
   created() {
+    if (this.$session.get("section") != null) {
+      api
+        .ajax("articlePageBySid/get", {
+          sid: this.$session.get("section").id,
+          currentPage: 1
+        })
+        .then(res => {
+          this.articlePage = res;
+          api
+            .ajax("userAccusePage/get", { currentPage: 1 })
+            .then(res => {
+              this.userAccusePage = res;
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -159,34 +157,94 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
+    submitEditArticleForm() {
+      console.log(this.editArticleForm);
+      api
+        .ajax("changeArticlePage/post", this.editArticleForm, "post")
+        .then(res => {
+          if (res > 0) {
+            MessageBox.alert("成功", "更新成功");
+          }
+          this.dialogEditVisible = false;
+        })
+        .catch(err => console.log(err));
+    },
     handleSizeChange1(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
-      console.log(`当前页: ${val}`);
+      api
+        .ajax("articlePageBySid/get", {
+          sid: this.$session.get("section").id,
+          currentPage: val
+        })
+        .then(res => {
+          this.articlePage = res;
+        })
+        .catch(err => console.log(err));
+    },
+    handleSizeChange2(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange2(val) {
+      api
+        .ajax("userAccusePage/get", { currentPage: val })
+        .then(res => {
+          this.userAccusePage = res;
+          console.log(res);
+        })
+        .catch(err => console.log(err));
     },
     handleDelete(index, row) {
-      console.log(index);
-      console.log(row.aid);
+      api
+        .ajax("removeArticlePageById/post", { id: row.id }, "post")
+        .then(res => {
+          if (res > 0) {
+            this.$alert("删除成功", "成功", {
+              confirmButtonText: "确定",
+              callback: () => {
+                this.$router.go(0);
+              }
+            });
+          } else {
+            MessageBox.alert("失败", "删除失败");
+          }
+        });
     },
     handleEdit(index, row) {
       this.dialogEditVisible = true;
-      this.tit = row.tit;
-      console.log(index, row);
+      this.editArticleForm = row;
     },
     handleBan(index, row) {
-      console.log(index);
+      api
+        .ajax("banUser/post", { id: row.id }, "post")
+        .then(res => {
+          if (res > 0) {
+            this.$alert("封号成功", "成功", {
+              confirmButtonText: "确定",
+              callback: () => {
+                this.$router.go(0);
+              }
+            });
+          }
+        })
+        .catch(err => console.log(err));
     },
     handleRelease(index, row) {
-      console.log(index);
-    },
-    onEditorChange({ editor, html, text }) {
-      // console.log('editor change!', editor, html, text)
-      this.content = html;
-      console.log(html);
-    },
-    showContent() {
-      console.log(this.content);
+      console.log(row.id);
+      api
+        .ajax("UnaccuseUser/post", { id: row.id }, "post")
+        .then(res => {
+          if (res > 0) {
+            this.$alert("释放成功", "成功", {
+              confirmButtonText: "确定",
+              callback: () => {
+                this.$router.go(0);
+              }
+            });
+          }
+        })
+        .catch(err => console.log(err));
     }
   }
 };

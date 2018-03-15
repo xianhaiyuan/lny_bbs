@@ -73,7 +73,7 @@ let router = new Router({
         component: accuse
       },
       {
-        name: "版块管理",
+        name: "版主管理",
         path: 'sectionManager',
         component: sectionManager
       }, {

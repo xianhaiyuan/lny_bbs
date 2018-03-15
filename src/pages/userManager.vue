@@ -18,7 +18,7 @@
 
             <el-table-column label="权限" width="300">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.position" placeholder="请选择活动区域">
+                <el-select v-model="scope.row.position" placeholder="请选择用户权限">
                   <el-option label="普通用户" value="普通用户"></el-option>
                   <el-option label="版主" value="版主"></el-option>
                   <el-option label="系统管理员" value="系统管理员"></el-option>
@@ -44,20 +44,26 @@
       </el-tab-pane>
       <el-tab-pane label="用户解封">
         <div class="block">
-          <el-table :data="userRelease" style="width: 100%" stripe>
-            <el-table-column label="被封号的用户" width="953">
+          <el-table :data="userBanPage.pageData" style="width: 100%" stripe>
+            <el-table-column label="被封号的用户名" width="200">
               <template slot-scope="scope">
                 {{scope.row.username}}
               </template>
             </el-table-column>
 
+            <el-table-column label="昵称" width="753">
+              <template slot-scope="scope">
+                {{scope.row.nickname}}
+              </template>
+            </el-table-column>
+
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleRelease(scope.$index, scope.row)">解封</el-button>
+                <el-button size="mini" @click="handleUnban(scope.$index, scope.row)">解封</el-button>
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="userBanPage.pageSize" layout="prev, pager, next, jumper" :total="userBanPage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -68,41 +74,29 @@
 <script>
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
-import api from "../api/api";
+import api from "../api";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
     return {
-      sec_name: "",
-      userSectionPage: [],
-      userAuthority: [
-        {
-          username: "李四子",
-          position: "普通用户"
-        },
-        {
-          username: "张飞",
-          position: "版主"
-        }
-      ],
-      userRelease: [
-        {
-          username: "李四"
-        },
-        {
-          username: "张三"
-        }
-      ]
+      userSectionPage: {},
+      userBanPage: []
     };
   },
   created() {
     api
       .ajax("userSectionPage/get", { currentPage: 1 })
       .then(res => {
-        console.log(res);
         this.userSectionPage = res;
+        api
+          .ajax("userBanPage/get", { currentPage: 1 })
+          .then(res => {
+            this.userBanPage = res;
+          })
+          .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
+
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -110,6 +104,24 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
+    handleUnban(index, row) {
+      api
+        .ajax("/unBanUser/post", { id: row.id }, "post")
+        .then(res => {
+          if (res > 0) {
+            this.$alert("解封成功", "成功", {
+              confirmButtonText: "确定",
+              callback: () => {
+                this.$router.go(0);
+              }
+            });
+          } else {
+            MessageBox.alert("成功", "解封失败");
+          }
+        })
+        .catch(err => console.log(err));
+      console.log(row.id);
+    },
     handleAuthority(index, row) {
       console.log(row);
       if (row.position != "版主") {
@@ -139,6 +151,10 @@ export default {
             "post"
           )
           .then(res => {
+            if (res == -1) {
+              MessageBox.alert("失败", "该板块不存在,请输入正确的版块名");
+              return;
+            }
             if (res > 0) {
               MessageBox.alert("成功", "提交成功");
             } else {
@@ -157,6 +173,19 @@ export default {
         .then(res => {
           console.log(res);
           this.userSectionPage = res;
+        })
+        .catch(err => console.log(err));
+      console.log(`当前页: ${val}`);
+    },
+    handleSizeChange2(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange2(val) {
+      api
+        .ajax("userBanPage/get", { currentPage: val })
+        .then(res => {
+          console.log(res);
+          this.userBanPage = res;
         })
         .catch(err => console.log(err));
       console.log(`当前页: ${val}`);

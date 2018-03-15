@@ -29,7 +29,7 @@ axios.interceptors.response.use((res) => {
   // }
   return res;
 }, (error) => {
-  MessageBox.alert("错误", "网络异常", "请检查服务器连接")
+  MessageBox.alert("错误", "未知异常", "请检查服务器")
   console.log(error)
   return Promise.reject(error);
 });
