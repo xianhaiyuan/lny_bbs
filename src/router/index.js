@@ -58,11 +58,11 @@ let router = new Router({
         component: userSetting
       }, {
         name: "我的帖子",
-        path: 'myArticle/:uid',
+        path: 'myArticle',
         component: myArticle
       }, {
         name: "我的收藏",
-        path: 'myStar/:uid',
+        path: 'myStar',
         component: myStar
       }, {
         name: "好友",

@@ -160,7 +160,7 @@ export default {
     submitEditArticleForm() {
       console.log(this.editArticleForm);
       api
-        .ajax("changeArticlePage/post", this.editArticleForm, "post")
+        .ajax("changeArticle/post", this.editArticleForm, "post")
         .then(res => {
           if (res > 0) {
             MessageBox.alert("成功", "更新成功");
@@ -196,20 +196,18 @@ export default {
         .catch(err => console.log(err));
     },
     handleDelete(index, row) {
-      api
-        .ajax("removeArticlePageById/post", { id: row.id }, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("删除成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                this.$router.go(0);
-              }
-            });
-          } else {
-            MessageBox.alert("失败", "删除失败");
-          }
-        });
+      api.ajax("removeArticleById/post", { id: row.id }, "post").then(res => {
+        if (res > 0) {
+          this.$alert("删除成功", "成功", {
+            confirmButtonText: "确定",
+            callback: () => {
+              this.$router.go(0);
+            }
+          });
+        } else {
+          MessageBox.alert("失败", "删除失败");
+        }
+      });
     },
     handleEdit(index, row) {
       this.dialogEditVisible = true;

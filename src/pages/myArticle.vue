@@ -2,21 +2,21 @@
   <div class="m-myArticle">
     <el-dialog title="编辑帖子" :visible.sync="dialogEditVisible">
       <div class="m-edit">
-        <el-input autofocus v-model="tit" placeholder="请输入帖子主题">{{this.tit}}</el-input>
-        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption">
+        <el-input autofocus v-model="editArticleForm.title" placeholder="请输入帖子主题"></el-input>
+        <quill-editor ref="myTextEditor" v-model="editArticleForm.content" :options="editorOption">
         </quill-editor>
         <div class="u-btn">
-          <el-button class="u-submit" type="primary" @click="showContent">提交
+          <el-button class="u-submit" type="primary" @click="submitEditArticleForm">提交
             <i class="el-icon-upload el-icon--right"></i>
           </el-button>
         </div>
       </div>
     </el-dialog>
     <div class="block">
-      <el-table :data="tableData" style="width: 100%" stripe>
+      <el-table :data="articlePage.pageData" style="width: 100%" stripe>
         <el-table-column label="主题" width="400">
           <template slot-scope="scope">
-            <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
+            <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.id }}">{{scope.row.title}}</router-link>
           </template>
         </el-table-column>
 
@@ -29,13 +29,13 @@
 
         <el-table-column label="作者">
           <template slot-scope="scope">
-            <span>{{ scope.row.name }}</span>
+            <span>{{ scope.row.author }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="回复">
           <template slot-scope="scope">
-            <span @click="handleDelete(scope.$index, scope.row)">{{ scope.row.commentCount }}</span>
+            <span @click="handleDelete(scope.$index, scope.row)">{{ scope.row.reply_count }}</span>
           </template>
         </el-table-column>
 
@@ -46,14 +46,16 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
+import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
+import api from "../api";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
@@ -77,49 +79,30 @@ export default {
       ["clean"] // remove formatting button
     ];
     return {
-      content: "<h2>I am Example</h2>",
-      tit: "",
+      articlePage: {},
+      editArticleForm: {},
       editorOption: {
         modules: {
           toolbar: toolbarOptions
         }
         // something config
       },
-      dialogEditVisible: false,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          tit:
-            "上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄",
-          commentCount: 1,
-          aid: 1
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
-          commentCount: 2,
-          aid: 2
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
-          commentCount: 2,
-          aid: 3
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          tit: "上海市普陀区金沙江路 1518 弄",
-          commentCount: 2,
-          aid: 12
-        }
-      ]
+      dialogEditVisible: false
     };
   },
   created() {
+    if (this.$session.get("user")) {
+      api
+        .ajax("articlePageByUid/get", {
+          uid: this.$session.get("user").id,
+          currentPage: 1
+        })
+        .then(res => {
+          this.articlePage = res;
+        })
+        .catch(err => console.log(err));
+    }
+
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -131,24 +114,52 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      if (this.$session.get("user")) {
+        api
+          .ajax("articlePageByUid/get", {
+            uid: this.$session.get("user").id,
+            currentPage: val
+          })
+          .then(res => {
+            this.articlePage = res;
+          })
+          .catch(err => console.log(err));
+      }
     },
     handleDelete(index, row) {
-      console.log(index);
-      console.log(row.aid);
+      api.ajax("removeArticleById/post", { id: row.id }, "post").then(res => {
+        if (res > 0) {
+          this.$alert("删除成功", "成功", {
+            confirmButtonText: "确定",
+            callback: () => {
+              this.$router.go(0);
+            }
+          });
+        } else {
+          MessageBox.alert("失败", "删除失败");
+        }
+      });
     },
     handleEdit(index, row) {
       this.dialogEditVisible = true;
-      this.tit = row.tit;
-      console.log(index, row);
+      this.editArticleForm = row;
     },
     onEditorChange({ editor, html, text }) {
       // console.log('editor change!', editor, html, text)
       this.content = html;
       console.log(html);
     },
-    showContent() {
-      console.log(this.content);
+    submitEditArticleForm() {
+      console.log(this.editArticleForm);
+      api
+        .ajax("changeArticle/post", this.editArticleForm, "post")
+        .then(res => {
+          if (res > 0) {
+            MessageBox.alert("成功", "更新成功");
+          }
+          this.dialogEditVisible = false;
+        })
+        .catch(err => console.log(err));
     }
   }
 };

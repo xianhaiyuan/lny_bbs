@@ -57,14 +57,6 @@ export default {
       }
     };
     return {
-      // settingForm: {
-      //   nickname: "",
-      //   grade: "",
-      //   sex: "",
-      //   email: "",
-      //   birthday: "",
-      //   avatar: ""
-      // },
       picFile: "",
       dialogImageUrl: "",
       dialogVisible: false,

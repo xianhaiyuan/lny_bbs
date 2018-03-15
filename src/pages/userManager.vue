@@ -175,7 +175,6 @@ export default {
           this.userSectionPage = res;
         })
         .catch(err => console.log(err));
-      console.log(`当前页: ${val}`);
     },
     handleSizeChange2(val) {
       console.log(`每页 ${val} 条`);
@@ -188,7 +187,6 @@ export default {
           this.userBanPage = res;
         })
         .catch(err => console.log(err));
-      console.log(`当前页: ${val}`);
     }
   }
 };

@@ -13,10 +13,16 @@
         <li>性别:
           <span v-if="this.$session.get('user')">{{this.$session.get('user').sex}}</span>
         </li>
+        <li>用户级别:
+          <span v-if="this.$session.get('user')">{{this.$session.get('user').position}}</span>
+        </li>
+        <li v-if="this.$session.get('section')">管理版块:
+          <span>{{this.$session.get('section').sec_name}}</span>
+        </li>
       </ul>
     </div>
     <div class="m-nav">
-      <router-link v-for="(item, index) in navs" @click.native="addClass(index)" :class="{'u-cur':index==cur}" :key="item.id" :to="{name: item.name,params: {uid: 1}}"><img :src='"../assets/img/" +item.img_name +".png"' alt="">{{ item.name }}</router-link>
+      <router-link v-for="(item, index) in navs" @click.native="addClass(index)" :class="{'u-cur':index==cur}" :key="item.id" :to="{name: item.name}"><img :src='"../assets/img/" +item.img_name +".png"' alt="">{{ item.name }}</router-link>
     </div>
   </div>
 </template>
@@ -94,14 +100,14 @@ $asd-color: #293134;
 }
 .m-userinfo {
   background-color: #3d474b;
-  height: 200px;
+  height: 235px;
   padding: 30px 0;
   ul {
     margin: 0;
     padding: 15px 25px 35px;
     li {
-      height: 20px;
-      line-height: 20px;
+      height: 25px;
+      line-height: 25px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
