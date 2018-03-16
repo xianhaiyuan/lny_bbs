@@ -1,17 +1,17 @@
 <template>
   <div class="m-checkUser">
     <el-tabs tab-position="top" style="height: 200px;">
-      <el-tab-pane :label='this.username+"的文章"'>
+      <el-tab-pane :label='this.$route.params.nickname+"的文章"'>
         <el-dialog title="帖子内容" :visible.sync="dialogArticleVisible">
           <div class="ql-container ql-snow" style="height:100%;width:100%;">
             <div class="ql-editor" v-html="this.article"></div>
           </div>
         </el-dialog>
         <div class="block">
-          <el-table :data="articleData" style="width: 100%" stripe>
+          <el-table :data="articlePage.pageData" style="width: 100%" stripe>
             <el-table-column label="主题" width="400">
               <template slot-scope="scope">
-                <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
+                <router-link :to="{ name:'帖子', params: { sid: scope.row.sid, aid: scope.row.id }}">{{scope.row.title}}</router-link>
               </template>
             </el-table-column>
 
@@ -24,13 +24,13 @@
 
             <el-table-column label="作者">
               <template slot-scope="scope">
-                <span>{{ scope.row.name }}</span>
+                <span>{{ scope.row.author }}</span>
               </template>
             </el-table-column>
 
             <el-table-column label="回复">
               <template slot-scope="scope">
-                <span>{{ scope.row.commentCount }}</span>
+                <span>{{ scope.row.reply_count }}</span>
               </template>
             </el-table-column>
 
@@ -41,11 +41,11 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
-      <el-tab-pane :label="this.username + '的评论'">
+      <el-tab-pane :label="this.$route.params.nickname + '的评论'">
         <div class="block">
           <el-dialog title="评论内容" :visible.sync="dialogCommentVisible">
             <div class="ql-container ql-snow" style="height:100%;width:100%;">
@@ -66,7 +66,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import api from "../api";
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
 const { mapActions } = createNamespacedHelpers("routeStore");
@@ -100,6 +101,7 @@ export default {
       ["clean"] // remove formatting button
     ];
     return {
+      articlePage: {},
       username: "lisi",
       article: "<h2>I am article</h2>",
       comment: "<h2>I am comment</h2>",
@@ -157,6 +159,15 @@ export default {
     };
   },
   created() {
+    api
+      .ajax("articlePageByUid/get", {
+        uid: this.$route.params.uid,
+        currentPage: 1
+      })
+      .then(res => {
+        this.articlePage = res;
+      })
+      .catch(err => console.log(err));
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -168,16 +179,27 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
-      console.log(`当前页: ${val}`);
+      api
+        .ajax("articlePageByUid/get", {
+          uid: this.$route.params.uid,
+          currentPage: val
+        })
+        .then(res => {
+          this.articlePage = res;
+        })
+        .catch(err => console.log(err));
     },
+    handleSizeChange2(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange2(val) {},
     articleDelete(index, row) {
       console.log(index);
       console.log(row.aid);
     },
     handleArticleDialog(index, row) {
       this.dialogArticleVisible = true;
-      this.tit = row.tit;
-      console.log(index, row);
+      this.article = row.content;
     },
     handleCommentDialog(index, row) {
       this.dialogCommentVisible = true;

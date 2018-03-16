@@ -2,13 +2,19 @@
   <div class="m-myStar">
     <div class="block">
       <el-table :data="articlePage.pageData" style="width: 100%" stripe>
-        <el-table-column label="主题" width="600">
+        <el-table-column label="主题" width="380">
           <template slot-scope="scope">
-            <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.id }}">{{scope.row.title}}</router-link>
+            <router-link :to="{ name:'帖子', params: { sid: scope.row.sid, aid: scope.row.id }}">{{scope.row.title}}</router-link>
           </template>
         </el-table-column>
 
-        <el-table-column label="发帖时间" width="200">
+        <el-table-column label="标签" width="120">
+          <template slot-scope="scope">
+            <span> {{scope.row.art_label}}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="发帖时间" width="180">
           <template slot-scope="scope">
             <i class="el-icon-time"></i>
             <span style="margin-left: 3px">{{ scope.row.date }}</span>

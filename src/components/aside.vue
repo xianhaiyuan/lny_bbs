@@ -71,9 +71,13 @@ export default {
       ]
     };
   },
+  created() {
+    this.cur = this.$session.get("navCur") || 0;
+  },
   methods: {
     addClass(index) {
       this.cur = index;
+      this.$session.set("navCur", index);
     }
   }
 };

@@ -1,10 +1,10 @@
 <template>
   <div class="publish">
-    <el-input autofocus v-model="tit" placeholder="请输入帖子主题"></el-input>
-    <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)">
+    <el-input autofocus v-model="addArticleForm.title" placeholder="请输入帖子主题"></el-input>
+    <quill-editor ref="myTextEditor" v-model="addArticleForm.content" :options="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)">
     </quill-editor>
     <div class="u-btn">
-      <el-button class="u-submit" type="primary" @click="showContent">提交
+      <el-button class="u-submit" type="primary" @click="submitAddArticleForm">提交
         <i class="el-icon-upload el-icon--right"></i>
       </el-button>
       <!-- 从数据库后读出帖子内容这样用
@@ -18,6 +18,8 @@
 <script>
 import { quillEditor } from "vue-quill-editor";
 import { createNamespacedHelpers } from "vuex";
+import MessageBox from "../utils/MessageBox";
+import api from "../api";
 const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
@@ -41,7 +43,14 @@ export default {
       ["clean"] // remove formatting button
     ];
     return {
-      content: "<h2>I am Example</h2>",
+      addArticleForm: {
+        title: "",
+        content: "<h2>I am Example</h2>",
+        uid: this.$session.get("user").id,
+        author: this.$session.get("user").nickname,
+        date: "",
+        sid: this.$route.params.sid
+      },
       editorOption: {
         modules: {
           toolbar: toolbarOptions
@@ -54,22 +63,32 @@ export default {
   methods: {
     ...mapActions(["setRouteList"]),
     onEditorBlur(editor) {
-      // console.log("editor blur!", editor.container.innerHTML);
-      console.log("editor blur!", editor.getContents());
+      // console.log("editor blur!", editor.getContents());
     },
     onEditorFocus(editor) {
-      console.log("editor focus!", editor);
+      // console.log("editor focus!", editor);
     },
     onEditorReady(editor) {
-      console.log("editor ready!", editor);
+      // console.log("editor ready!", editor);
     },
-    onEditorChange({ editor, html, text }) {
-      // console.log('editor change!', editor, html, text)
-      this.content = html;
-      console.log(html);
-    },
-    showContent() {
-      console.log(this.content);
+    onEditorChange({ editor, html, text }) {},
+    submitAddArticleForm() {
+      this.addArticleForm.date = new Date().format("yyyy-MM-dd hh:mm");
+      api
+        .ajax("addArticle/post", this.addArticleForm, "post")
+        .then(res => {
+          if (res > 0) {
+            this.$alert("添加成功", "成功", {
+              confirmButtonText: "确定",
+              callback: () => {
+                this.$router.go(-1);
+              }
+            });
+          } else {
+            MessageBox.alert("失败", "添加失败");
+          }
+        })
+        .catch(err => console.log(err));
     }
   },
   computed: {

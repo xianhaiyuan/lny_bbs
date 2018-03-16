@@ -20,34 +20,34 @@
         </el-dialog>
         <div class="block">
           <el-table :data="articlePage.pageData" style="width: 100%" stripe>
-            <el-table-column label="主题" width="350">
+            <el-table-column label="主题" width="360">
               <template slot-scope="scope">
-                <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.id }}">{{scope.row.title}}</router-link>
+                <router-link :to="{ name:'帖子', params: { sid: scope.row.sid, aid: scope.row.id }}">{{scope.row.title}}</router-link>
               </template>
             </el-table-column>
 
-            <el-table-column label="发帖时间" width="150">
+            <el-table-column label="帖子标签" width="120">
+              <template slot-scope="scope">
+                <span>{{scope.row.art_label}}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="发帖时间" width="180">
               <template slot-scope="scope">
                 <i class="el-icon-time"></i>
                 <span style="margin-left: 3px">{{ scope.row.date }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="作者" width="100">
+            <el-table-column label="作者">
               <template slot-scope="scope">
                 <span>{{ scope.row.author }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="回复" width="100">
+            <el-table-column label="回复">
               <template slot-scope="scope">
                 <span @click="handleDelete(scope.$index, scope.row)">{{ scope.row.reply_count }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="帖子标签">
-              <template slot-scope="scope">
-                <span>{{scope.row.art_label}}</span>
               </template>
             </el-table-column>
 
@@ -67,13 +67,13 @@
           <el-table :data="userAccusePage.pageData" style="width: 100%" stripe>
             <el-table-column label="被举报的用户名" width="200">
               <template slot-scope="scope">
-                <router-link :to="{ name:'检测用户', params: { uid: 1 }}">{{scope.row.username}}</router-link>
+                <router-link :to="{ name:'检测用户', params: { uid: scope.row.id,nickname: scope.row.nickname }}">{{scope.row.username}}</router-link>
               </template>
             </el-table-column>
 
             <el-table-column label="昵称" width="753">
               <template slot-scope="scope">
-                <router-link :to="{ name:'检测用户', params: { uid: 1 }}">{{scope.row.nickname}}</router-link>
+                <span>{{scope.row.nickname}}</span>
               </template>
             </el-table-column>
 

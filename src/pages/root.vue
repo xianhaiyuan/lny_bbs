@@ -10,7 +10,7 @@
       <el-main>
         <div class="banner">
           <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :key="item.id" v-for="item in routeList" :to="item.path">{{item.name}}</el-breadcrumb-item>
+            <el-breadcrumb-item :key="item.id" v-for="(item,index) in routeList" :to="item.path">{{item.name}}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
         <router-view @freshNav="getRoutePath"></router-view>

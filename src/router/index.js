@@ -78,7 +78,7 @@ let router = new Router({
         component: sectionManager
       }, {
         name: "检测用户",
-        path: 'sectionManager/checkUser/:uid',
+        path: 'sectionManager/checkUser/:uid/:nickname',
         component: checkUser
       },
       {
