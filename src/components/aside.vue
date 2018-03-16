@@ -2,7 +2,11 @@
   <div class="g-asd">
     <router-link to="/" class="m-tit">岭南园论坛</router-link>
     <div class="m-userinfo">
-      <div class="m-avatar"></div>
+      <div class="m-avatar">
+        <div v-if="this.$session.get('user')">
+          <img v-if="this.$session.get('user').avatar" :src="this.$session.get('user').avatar" alt="">
+        </div>
+      </div>
       <ul>
         <li>昵称:
           <span v-if="this.$session.get('user')">{{this.$session.get('user').nickname}}</span>
@@ -125,6 +129,11 @@ $asd-color: #293134;
   border-radius: 50%;
   background-image: url("../assets/img/avatar.png");
   background-repeat: no-repeat;
+  img {
+    width: 119px;
+    height: 119px;
+    border-radius: 50%;
+  }
 }
 .m-nav {
   background-color: #293134;

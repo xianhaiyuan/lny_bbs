@@ -5,10 +5,16 @@
     text-align: right;
     padding: 20px 0;
   }
-  .avatar {
+  .m-avatar {
     width: 119px;
     height: 119px;
     border: 1px solid #e5e3e3;
+    background-image: url("../assets/img/avatar.png");
+    background-repeat: no-repeat;
+    img {
+      width: 119px;
+      height: 119px;
+    }
   }
   .el-row {
     margin-bottom: 20px;

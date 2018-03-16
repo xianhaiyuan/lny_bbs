@@ -133,7 +133,7 @@ export default {
     };
   },
   created() {
-    if (this.$session.get("section") != null) {
+    if (this.$session.get("section")) {
       api
         .ajax("articlePageBySid/get", {
           sid: this.$session.get("section").id,
