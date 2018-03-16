@@ -133,7 +133,7 @@ export default {
       }
     },
     handleDelete(index, row) {
-      api.ajax("removeArticleById/post", { id: row.id }, "post").then(res => {
+      api.ajax("removeArticleById/post", row, "post").then(res => {
         if (res > 0) {
           this.$alert("删除成功", "成功", {
             confirmButtonText: "确定",
