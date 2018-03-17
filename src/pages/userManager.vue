@@ -105,63 +105,50 @@ export default {
   methods: {
     ...mapActions(["setRouteList"]),
     handleUnban(index, row) {
-      api
-        .ajax("/unBanUser/post", { id: row.id }, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("解封成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                this.$router.go(0);
-              }
-            });
-          } else {
-            MessageBox.alert("成功", "解封失败");
-          }
-        })
-        .catch(err => console.log(err));
-      console.log(row.id);
+      api.update(
+        "/unBanUser/post",
+        { id: row.id },
+        this,
+        { alert: true, fresh: true, suc: "解封成功", err: "解封失败" },
+        "系统管理员"
+      );
     },
     handleAuthority(index, row) {
-      console.log(row);
       if (row.position != "版主") {
-        api
-          .ajax(
-            "changeUserPosition/post",
-            { id: row.id, position: row.position },
-            "post"
-          )
-          .then(res => {
-            if (res > 0) {
-              MessageBox.alert("成功", "提交成功");
-            } else {
-              MessageBox.alert("失败", "失败");
-            }
-          })
-          .catch(err => console.log(err));
+        api.update(
+          "changeUserPosition/post",
+          { id: row.id, position: row.position },
+          this,
+          { alert: true, suc: "提交成功", err: "提交失败" },
+          "系统管理员"
+        );
       } else {
-        api
-          .ajax(
-            "changeUserPositionSection/post",
-            {
-              id: row.id,
-              position: row.position,
-              sec_name: row.section.sec_name
-            },
-            "post"
-          )
-          .then(res => {
-            if (res == -1) {
-              MessageBox.alert("失败", "该板块不存在,请输入正确的版块名");
-              return;
-            }
-            if (res > 0) {
-              MessageBox.alert("成功", "提交成功");
-            } else {
-              MessageBox.alert("失败", "失败");
-            }
-          })
-          .catch(err => console.log(err));
+        if (this.$session.get("user").position == "系统管理员") {
+          api
+            .ajax(
+              "changeUserPositionSection/post",
+              {
+                id: row.id,
+                position: row.position,
+                sec_name: row.section.sec_name
+              },
+              "post"
+            )
+            .then(res => {
+              if (res == -1) {
+                MessageBox.alert("失败", "该板块不存在,请输入正确的版块名");
+                return;
+              }
+              if (res > 0) {
+                MessageBox.alert("成功", "提交成功");
+              } else {
+                MessageBox.alert("失败", "失败");
+              }
+            })
+            .catch(err => console.log(err));
+        } else {
+          MessageBox.alert("失败", "操作失败,权限不足");
+        }
       }
     },
     handleSizeChange1(val) {

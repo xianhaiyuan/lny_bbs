@@ -94,9 +94,16 @@
   }
   .u-replyOne {
     height: 25px;
-    line-height: 25px;
-    padding-left: 16px;
+    line-height: 25px; // padding-left: 16px;
     color: rgb(98, 98, 253);
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .u-deleteOne {
+    height: 25px;
+    line-height: 25px;
+    color: rgb(250, 53, 53);
     &:hover {
       cursor: pointer;
     }

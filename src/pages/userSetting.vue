@@ -129,7 +129,7 @@ export default {
                   return;
                 }
                 if (res.id == -1) {
-                  this.$alert("长时间无操作,用户过时,请重新登录", "失败", {
+                  this.$alert("请登录后再操作", "提示", {
                     confirmButtonText: "确定",
                     callback: () => {
                       this.$router.push({ name: "登录" });
@@ -153,7 +153,7 @@ export default {
                   return;
                 }
                 if (res.id == -1) {
-                  this.$alert("长时间无操作,用户过时,请重新登录", "失败", {
+                  this.$alert("请登录后再操作", "提示", {
                     confirmButtonText: "确定",
                     callback: () => {
                       this.$router.push({ name: "登录" });
@@ -171,7 +171,7 @@ export default {
               });
           }
         } else {
-          MessageBox.alert("错误", "注册失败", "请输入完整信息");
+          MessageBox.alert("错误", "更新失败", "请输入完整信息");
           return false;
         }
       });

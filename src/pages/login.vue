@@ -92,6 +92,7 @@ export default {
           api
             .ajax("login/post", this[formName], "post")
             .then(res => {
+              console.log(res);
               if (res.position == "版主") {
                 api
                   .ajax("sectionByUid/get", { uid: res.id })

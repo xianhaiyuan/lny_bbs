@@ -46,15 +46,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          api
-            .ajax("accuseUser/post", { id: this[formName].userid }, "post")
-            .then(res => {
-              if (res > 0) {
-                MessageBox.alert("成功", "举报成功");
-              } else {
-                MessageBox.alert("失败", "举报失败");
-              }
-            });
+          api.update("accuseUser/post", { id: this[formName].userid }, this, {
+            alert: true,
+            suc: "举报成功",
+            err: "举报失败"
+          });
         } else {
           console.log("error submit!!");
           return false;

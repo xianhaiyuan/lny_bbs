@@ -95,26 +95,11 @@ export default {
       }
     },
     handleDelete(index, row) {
-      if (this.$session.get("user") != null) {
-        api
-          .ajax(
-            "removeArticleByStar/post",
-            { uid: this.$session.get("user").id, aid: row.id },
-            "post"
-          )
-          .then(res => {
-            if (res > 0) {
-              this.$alert("删除成功", "成功", {
-                confirmButtonText: "确定",
-                callback: () => {
-                  this.$router.go(0);
-                }
-              });
-            } else {
-              MessageBox.alert("失败", "删除失败");
-            }
-          });
-      }
+      api.delete(
+        "removeArticleByStar/post",
+        { uid: this.$session.get("user").id, aid: row.id },
+        this
+      );
     }
   }
 };

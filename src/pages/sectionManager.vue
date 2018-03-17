@@ -62,7 +62,7 @@
           </el-pagination>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="用户封号">
+      <el-tab-pane label="用户管理">
         <div class="block">
           <el-table :data="userAccusePage.pageData" style="width: 100%" stripe>
             <el-table-column label="被举报的用户名" width="200">
@@ -159,15 +159,18 @@ export default {
     ...mapActions(["setRouteList"]),
     submitEditArticleForm() {
       console.log(this.editArticleForm);
-      api
-        .ajax("changeArticle/post", this.editArticleForm, "post")
-        .then(res => {
-          if (res > 0) {
-            MessageBox.alert("成功", "更新成功");
-          }
-          this.dialogEditVisible = false;
-        })
-        .catch(err => console.log(err));
+      api.update(
+        "changeArticle/post",
+        this.editArticleForm,
+        this,
+        {
+          alert: true,
+          suc: "更新成功",
+          err: "更新失败"
+        },
+        "版主"
+      );
+      this.dialogEditVisible = false;
     },
     handleSizeChange1(val) {
       console.log(`每页 ${val} 条`);
@@ -200,53 +203,40 @@ export default {
       }
     },
     handleDelete(index, row) {
-      api.ajax("removeArticleById/post", row, "post").then(res => {
-        if (res > 0) {
-          this.$alert("删除成功", "成功", {
-            confirmButtonText: "确定",
-            callback: () => {
-              this.$router.go(0);
-            }
-          });
-        } else {
-          MessageBox.alert("失败", "删除失败");
-        }
-      });
+      api.delete("removeArticleById/post", row, this, "版主");
     },
     handleEdit(index, row) {
       this.dialogEditVisible = true;
       this.editArticleForm = row;
     },
     handleBan(index, row) {
-      api
-        .ajax("banUser/post", { id: row.id }, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("封号成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                this.$router.go(0);
-              }
-            });
-          }
-        })
-        .catch(err => console.log(err));
+      api.update(
+        "banUser/post",
+        { id: row.id },
+        this,
+        {
+          alert: true,
+          fresh: true,
+          suc: "封号成功",
+          err: "封号失败"
+        },
+        "版主"
+      );
     },
     handleRelease(index, row) {
       console.log(row.id);
-      api
-        .ajax("UnaccuseUser/post", { id: row.id }, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("释放成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                this.$router.go(0);
-              }
-            });
-          }
-        })
-        .catch(err => console.log(err));
+      api.update(
+        "UnaccuseUser/post",
+        { id: row.id },
+        this,
+        {
+          alert: true,
+          fresh: true,
+          suc: "释放成功",
+          err: "释放失败"
+        },
+        "版主"
+      );
     }
   }
 };

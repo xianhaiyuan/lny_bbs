@@ -36,9 +36,12 @@
           </el-col>
           <el-col :span="20">
             <div class="grid-box-head u-border-left">
-              <el-row>
-                <el-col :span="2" class="u-replyOne">
-                  <div @click="handleReplyDialog">回复</div>
+              <el-row style="padding-left:15px;">
+                <el-col :span="1" class="u-replyOne">
+                  <div @click="handleReplyDialog(article.content)">回复</div>
+                </el-col>
+                <el-col :span="1" class="u-deleteOne">
+                  <div @click="submitDeleteArticleForm(article)">删除</div>
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
                   <div>楼主</div>
@@ -111,7 +114,7 @@
         </el-row>
       </div>
     </div>
-    <div class="m-contain" v-for="(item,index) in comments.pageData">
+    <div class="m-contain" v-for="(item,index) in commentPage.pageData">
       <div class="m-box">
         <el-row class="m-head">
           <el-col :span="4">
@@ -121,21 +124,24 @@
           </el-col>
           <el-col :span="20">
             <div class="grid-box-head u-border-left">
-              <el-row>
-                <el-col :span="2" class="u-replyOne">
-                  <div @click="handleReplyDialog">回复</div>
+              <el-row style="padding-left:15px;">
+                <el-col :span="1" class="u-replyOne">
+                  <div @click="handleReplyDialog(item.comment)">回复</div>
+                </el-col>
+                <el-col :span="1" class="u-deleteOne">
+                  <div @click="submitDeleteCommentForm(item)">删除</div>
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
                   <div>
                     <!-- <span v-if="index == 0">沙发</span>
                     <span v-else-if="index == 1">板凳</span>
                     <span v-else>{{index}}楼</span> -->
-                    <span v-if="comments.currentPage == 1">
+                    <span v-if="commentPage.currentPage == 1">
                       <span v-if="index == 0">沙发</span>
                       <span v-else-if="index == 1">板凳</span>
-                      <span v-else>{{index+comments.currentPage}}楼</span>
+                      <span v-else>{{index+commentPage.currentPage}}楼</span>
                     </span>
-                    <span v-else>{{index+1+(comments.currentPage-1)*comments.pageSize}}楼</span>
+                    <span v-else>{{index+1+(commentPage.currentPage-1)*commentPage.pageSize}}楼</span>
                   </div>
                 </el-col>
               </el-row>
@@ -194,10 +200,10 @@
             <div class="grid-box-foot u-border-left">
               <el-row class="u-praise-blame">
                 <el-col :span="2">
-                  <img src="../assets/img/praise.png" alt="" style="margin-bottom: 4px;">{{item.praise}}
+                  <img @click="submitCommentPraise(item)" src="../assets/img/praise.png" alt="" style="margin-bottom: 4px;">{{item.praise}}
                 </el-col>
                 <el-col :span="2">
-                  <img src="../assets/img/blame.png" alt="">{{item.blame}}
+                  <img @click="submitCommentBlame(item)" src="../assets/img/blame.png" alt="">{{item.blame}}
                 </el-col>
                 <el-col :span="3" :offset="17">
                   {{item.date}}
@@ -208,7 +214,7 @@
         </el-row>
       </div>
     </div>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="comments.pageSize" layout="prev, pager, next, jumper" :total="comments.totalCount">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="commentPage.pageSize" layout="prev, pager, next, jumper" :total="commentPage.totalCount">
     </el-pagination>
     <div class="m-reply">
       <quill-editor ref="myTextEditor" v-model="commentForm.comment" :options="editorOption">
@@ -256,19 +262,21 @@ export default {
         uid: 0,
         aid: 0,
         date: "",
-        author: ""
+        author: "",
+        sid: 0
       },
       replyForm: {
         comment: "",
         uid: 0,
         aid: 0,
+        sid: 0,
         date: "",
         author: "",
         from_content: "",
         from_nickname: ""
       },
       article: {},
-      comments: {},
+      commentPage: {},
       dialogReplyVisible: false,
       articleDialogVisible: true,
       editorOption: {
@@ -290,8 +298,7 @@ export default {
         api
           .ajax("commentPageByAid/get", { aid: res.id, currentPage: 1 })
           .then(res => {
-            console.log(res);
-            this.comments = res;
+            this.commentPage = res;
           })
           .catch(err => console.log(err));
       })
@@ -307,13 +314,37 @@ export default {
       // console.log('editor change!', editor, html, text)
       console.log(html);
     },
-    handleReplyDialog() {
+    submitDeleteArticleForm(item) {
+      api.delete("removeArticleById/post", { id: item.id }, this, "系统管理员");
+    },
+    submitDeleteCommentForm(item) {
+      api.delete("removeCommentById/post", { id: item.id }, this, "系统管理员");
+    },
+    submitCommentPraise(item) {
+      api
+        .ajax("commentPraise/post", { id: item.id }, "post")
+        .then(res => {
+          if (res > 0) item.praise += 1;
+        })
+        .catch(err => console.log(err));
+    },
+    submitCommentBlame(item) {
+      api
+        .ajax("commentBlame/post", { id: item.id }, "post")
+        .then(res => {
+          if (res > 0) item.blame += 1;
+        })
+        .catch(err => console.log(err));
+    },
+    handleReplyDialog(fromContent) {
       this.replyForm.date = new Date().format("yyyy-MM-dd hh:mm");
       this.replyForm.uid = this.$session.get("user").id;
       this.replyForm.author = this.$session.get("user").nickname;
       this.replyForm.from_nickname = this.article.author;
-      this.replyForm.from_content = this.article.content;
+      this.replyForm.from_content =
+        "<div style='color:red'>" + fromContent + "</div>";
       this.replyForm.aid = this.$route.params.aid;
+      this.replyForm.sid = this.$route.params.sid;
       this.dialogReplyVisible = true;
     },
     submitCommentForm() {
@@ -321,6 +352,8 @@ export default {
       this.commentForm.uid = this.$session.get("user").id;
       this.commentForm.author = this.$session.get("user").nickname;
       this.commentForm.aid = this.$route.params.aid;
+      this.commentForm.sid = this.$route.params.sid;
+      console.log(this.commentForm);
       api
         .ajax("addComment/post", this.commentForm, "post")
         .then(res => {
@@ -328,7 +361,7 @@ export default {
             this.$alert("添加成功", "成功", {
               confirmButtonText: "确定",
               callback: () => {
-                this.$router.go(0);
+                // this.$router.go(0);
               }
             });
           } else {
@@ -352,12 +385,13 @@ export default {
           currentPage: val
         })
         .then(res => {
-          console.log(res.currentPage);
-          this.comments = res;
+          this.commentPage = res;
         })
         .catch(err => console.log(err));
     },
     submitReplyForm() {
+      this.replyForm.comment =
+        this.replyForm.from_content + this.replyForm.comment;
       api
         .ajax("addComment/post", this.replyForm, "post")
         .then(res => {

@@ -37,16 +37,9 @@ export default {
   },
   methods: {
     unLogin() {
-      api
-        .ajax("unLogin/post", { id: this.$session.get("user").id }, "post")
-        .then(res => {
-          if (res > 0) {
-            console.log("退出登录");
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      api.update("unLogin/post", { id: this.$session.get("user").id }, this, {
+        alert: false
+      });
       this.$session.remove("user");
       this.$router.push({ name: "登录" });
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="m-checkUser">
     <el-tabs tab-position="top" style="height: 200px;">
-      <el-tab-pane :label='this.$route.params.nickname+"的文章"'>
+      <el-tab-pane :label='this.$route.params.nickname+"的帖子"'>
         <el-dialog title="帖子内容" :visible.sync="dialogArticleVisible">
           <div class="ql-container ql-snow" style="height:100%;width:100%;">
             <div class="ql-editor" v-html="this.article"></div>
@@ -52,10 +52,29 @@
               <div class="ql-editor" v-html="this.comment"></div>
             </div>
           </el-dialog>
-          <el-table :data="commentData" style="width: 100%" stripe>
-            <el-table-column label="所在文章" width="953">
+          <el-table :data="commentPage.pageData" style="width: 100%" stripe>
+            <el-table-column label="所在文章" width="353">
               <template slot-scope="scope">
-                <router-link :to="{ name:'帖子', params: { sid: 1, aid: scope.row.aid }}">{{scope.row.tit}}</router-link>
+                <router-link :to="{ name:'帖子', params: { sid: scope.row.sid, aid: scope.row.aid }}">{{scope.row.title}}</router-link>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="评论时间" width="200">
+              <template slot-scope="scope">
+                <i class="el-icon-time"></i>
+                <span style="margin-left: 3px">{{ scope.row.date }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="点赞个数" width="200">
+              <template slot-scope="scope">
+                <span>{{ scope.row.praise }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="被踩个数" width="200">
+              <template slot-scope="scope">
+                <span>{{ scope.row.blame }}</span>
               </template>
             </el-table-column>
 
@@ -66,7 +85,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="commentPage.pageSize" layout="prev, pager, next, jumper" :total="commentPage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -102,9 +121,10 @@ export default {
     ];
     return {
       articlePage: {},
+      commentPage: {},
       username: "lisi",
       article: "<h2>I am article</h2>",
-      comment: "<h2>I am comment</h2>",
+      comment: "",
       tit: "",
       editorOption: {
         modules: {
@@ -166,6 +186,15 @@ export default {
       })
       .then(res => {
         this.articlePage = res;
+        api
+          .ajax("commentPageByUid/get", {
+            currentPage: 1,
+            uid: this.$route.params.uid
+          })
+          .then(res => {
+            this.commentPage = res;
+          })
+          .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
@@ -192,20 +221,30 @@ export default {
     handleSizeChange2(val) {
       console.log(`每页 ${val} 条`);
     },
-    handleCurrentChange2(val) {},
+    handleCurrentChange2(val) {
+      api
+        .ajax("commentPageByUid/get", {
+          currentPage: val,
+          uid: this.$route.params.uid
+        })
+        .then(res => {
+          this.commentPage = res;
+        })
+        .catch(err => console.log(err));
+    },
     articleDelete(index, row) {
-      console.log(index);
-      console.log(row.aid);
+      api.delete("removeArticleById/post", { id: row.id }, this, "版主");
     },
     handleArticleDialog(index, row) {
       this.dialogArticleVisible = true;
       this.article = row.content;
     },
     handleCommentDialog(index, row) {
+      this.comment = row.comment;
       this.dialogCommentVisible = true;
     },
     commentDelete(index, row) {
-      console.log(index);
+      api.delete("removeCommentById/post", { id: row.id }, this, "版主");
     },
     onEditorChange({ editor, html, text }) {
       // console.log('editor change!', editor, html, text)

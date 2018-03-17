@@ -133,33 +133,19 @@ export default {
       }
     },
     handleDelete(index, row) {
-      api.ajax("removeArticleById/post", row, "post").then(res => {
-        if (res > 0) {
-          this.$alert("删除成功", "成功", {
-            confirmButtonText: "确定",
-            callback: () => {
-              this.$router.go(0);
-            }
-          });
-        } else {
-          MessageBox.alert("失败", "删除失败");
-        }
-      });
+      api.delete("removeArticleById/post", row, this);
     },
     handleEdit(index, row) {
       this.dialogEditVisible = true;
       this.editArticleForm = row;
     },
     submitEditArticleForm() {
-      api
-        .ajax("changeArticle/post", this.editArticleForm, "post")
-        .then(res => {
-          if (res > 0) {
-            MessageBox.alert("成功", "更新成功");
-          }
-          this.dialogEditVisible = false;
-        })
-        .catch(err => console.log(err));
+      api.update("changeArticle/post", this.editArticleForm, this, {
+        alert: true,
+        suc: "更新成功",
+        err: "更新失败"
+      });
+      this.dialogEditVisible = false;
     }
   }
 };

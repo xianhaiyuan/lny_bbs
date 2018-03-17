@@ -98,17 +98,18 @@ export default {
   methods: {
     ...mapActions(["setRouteList"]),
     editFormSubmit() {
-      api
-        .ajax("sectionChange/post", this.editSectionForm, "post")
-        .then(res => {
-          if (res > 0) {
-            MessageBox.alert("成功", "提交成功");
-          } else {
-            MessageBox.alert("失败", "提交失败");
-          }
-          this.dialogEditVisible = false;
-        })
-        .catch(err => console.log(err));
+      api.update(
+        "sectionChange/post",
+        this.editSectionForm,
+        this,
+        {
+          alert: true,
+          suc: "提交成功",
+          err: "提交失败"
+        },
+        "系统管理员"
+      );
+      this.dialogEditVisible = false;
     },
     handleSizeChange1(val) {
       console.log(`每页 ${val} 条`);
@@ -124,21 +125,12 @@ export default {
     },
     handleDelete(index, row) {
       this.deleteSectionForm.id = row.id;
-      api
-        .ajax("deleteSection/post", this.deleteSectionForm, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("删除成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                this.$router.go(0);
-              }
-            });
-          } else {
-            MessageBox.alert("失败", "删除失败");
-          }
-          this.dialogAddVisible = false;
-        });
+      api.delete(
+        "deleteSection/post",
+        this.deleteSectionForm,
+        this,
+        "系统管理员"
+      );
     },
     handleAdd(index, row) {
       this.dialogAddVisible = true;
@@ -151,19 +143,7 @@ export default {
       console.log(index);
     },
     addFormSubmit() {
-      api.ajax("addSection/post", this.addSectionForm, "post").then(res => {
-        if (res > 0) {
-          this.$alert("添加成功", "成功", {
-            confirmButtonText: "确定",
-            callback: () => {
-              this.$router.go(0);
-            }
-          });
-        } else {
-          MessageBox.alert("失败", "添加失败");
-        }
-        this.dialogAddVisible = false;
-      });
+      api.insert("addSection/post", this.addSectionForm, this, "系统管理员");
     }
   }
 };
