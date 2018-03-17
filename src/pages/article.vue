@@ -13,7 +13,7 @@
         </div>
       </div>
     </el-dialog>
-    <div class="m-contain">
+    <div class="m-contain" v-show="articleDialogVisible">
       <el-row class="m-tit">
         <el-col :span="22">
           <div class="grid-box-tit">文章主题：
@@ -82,7 +82,7 @@
               <el-row class="m-func">
                 <el-col :span="8">
                   <img src="../assets/img/scan.png" alt="">
-                  <router-link :to="{name:'用户信息',params:{uid: article.uid}}">查看</router-link>
+                  <router-link :to="{name:'用户信息',params:{uid: this.article.uid || 0}}">查看</router-link>
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/msg.png" alt="">
@@ -111,25 +111,12 @@
         </el-row>
       </div>
     </div>
-    <div class="m-contain">
-      <el-row class="m-tit">
-        <el-col :span="22">
-          <div class="grid-box-tit">文章主题：
-            <span v-if="article.art_label">【{{this.article.art_label}}】</span>
-            {{this.article.title}}
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <div class="grid-box-tit u-star"><img @click="submitAddStar" src="../assets/img/star.png" alt="收藏帖子">
-            <!-- <div>已收藏</div> -->
-          </div>
-        </el-col>
-      </el-row>
+    <div class="m-contain" v-for="(item,index) in comments.pageData">
       <div class="m-box">
         <el-row class="m-head">
           <el-col :span="4">
             <div class="grid-box-head m-userid">
-              用户ID：{{this.article.uid}}
+              用户ID：{{item.uid}}
             </div>
           </el-col>
           <el-col :span="20">
@@ -139,7 +126,17 @@
                   <div @click="handleReplyDialog">回复</div>
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
-                  <div>楼主</div>
+                  <div>
+                    <!-- <span v-if="index == 0">沙发</span>
+                    <span v-else-if="index == 1">板凳</span>
+                    <span v-else>{{index}}楼</span> -->
+                    <span v-if="comments.currentPage == 1">
+                      <span v-if="index == 0">沙发</span>
+                      <span v-else-if="index == 1">板凳</span>
+                      <span v-else>{{index+comments.currentPage}}楼</span>
+                    </span>
+                    <span v-else>{{index+1+(comments.currentPage-1)*comments.pageSize}}楼</span>
+                  </div>
                 </el-col>
               </el-row>
             </div>
@@ -154,13 +151,13 @@
               <div class="m-profile">
                 <ul>
                   <li>昵称：
-                    <i>{{this.article.author}}</i>
+                    <i>{{item.author}}</i>
                   </li>
                   <li>年级：
-                    <i>{{this.article.grade}}</i>
+                    <i>{{item.grade}}</i>
                   </li>
                   <li>文章：
-                    <i>{{this.article.article_count}}</i>
+                    <i>{{item.article_count}}</i>
                   </li>
                 </ul>
               </div>
@@ -169,7 +166,7 @@
           <el-col :span="20" style="border-left: 1px solid #c3d9ff;">
             <div class="grid-box-content">
               <div class="ql-container ql-snow" style="height:100%;border: 0;">
-                <div class="ql-editor" v-html="article.content"></div>
+                <div class="ql-editor" v-html="item.comment"></div>
               </div>
             </div>
           </el-col>
@@ -180,7 +177,7 @@
               <el-row class="m-func">
                 <el-col :span="8">
                   <img src="../assets/img/scan.png" alt="">
-                  <router-link :to="{name:'用户信息',params:{uid: article.uid}}">查看</router-link>
+                  <router-link :to="{name:'用户信息',params:{uid: item.uid || 0}}">查看</router-link>
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/msg.png" alt="">
@@ -197,13 +194,13 @@
             <div class="grid-box-foot u-border-left">
               <el-row class="u-praise-blame">
                 <el-col :span="2">
-                  <img src="../assets/img/praise.png" alt="" style="margin-bottom: 4px;">123
+                  <img src="../assets/img/praise.png" alt="" style="margin-bottom: 4px;">{{item.praise}}
                 </el-col>
                 <el-col :span="2">
-                  <img src="../assets/img/blame.png" alt="">11
+                  <img src="../assets/img/blame.png" alt="">{{item.blame}}
                 </el-col>
                 <el-col :span="3" :offset="17">
-                  {{this.article.date}}
+                  {{item.date}}
                 </el-col>
               </el-row>
             </div>
@@ -211,7 +208,7 @@
         </el-row>
       </div>
     </div>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="100" layout="prev, pager, next, jumper" :total="1000">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="comments.pageSize" layout="prev, pager, next, jumper" :total="comments.totalCount">
     </el-pagination>
     <div class="m-reply">
       <quill-editor ref="myTextEditor" v-model="commentForm.comment" :options="editorOption">
@@ -271,11 +268,9 @@ export default {
         from_nickname: ""
       },
       article: {},
+      comments: {},
       dialogReplyVisible: false,
-      replyOne: "",
-      content:
-        "<p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p><p>大家好</p>",
-      reply: "",
+      articleDialogVisible: true,
       editorOption: {
         modules: {
           toolbar: toolbarOptions
@@ -292,6 +287,13 @@ export default {
       })
       .then(res => {
         this.article = res;
+        api
+          .ajax("commentPageByAid/get", { aid: res.id, currentPage: 1 })
+          .then(res => {
+            console.log(res);
+            this.comments = res;
+          })
+          .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
@@ -303,7 +305,6 @@ export default {
     ...mapActions(["setRouteList"]),
     onEditorChange({ editor, html, text }) {
       // console.log('editor change!', editor, html, text)
-      this.reply = html;
       console.log(html);
     },
     handleReplyDialog() {
@@ -340,7 +341,21 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      if (val == 1) {
+        this.articleDialogVisible = true;
+      } else {
+        this.articleDialogVisible = false;
+      }
+      api
+        .ajax("commentPageByAid/get", {
+          aid: this.article.id,
+          currentPage: val
+        })
+        .then(res => {
+          console.log(res.currentPage);
+          this.comments = res;
+        })
+        .catch(err => console.log(err));
     },
     submitReplyForm() {
       api
