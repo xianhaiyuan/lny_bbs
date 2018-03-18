@@ -38,7 +38,7 @@
             <div class="grid-box-head u-border-left">
               <el-row style="padding-left:15px;">
                 <el-col :span="1" class="u-replyOne">
-                  <div @click="handleReplyDialog(article.content)">回复</div>
+                  <div @click="handleReplyDialog(article.content,article.author)">回复</div>
                 </el-col>
                 <el-col :span="1" class="u-deleteOne">
                   <div @click="submitDeleteArticleForm(article)">删除</div>
@@ -126,7 +126,7 @@
             <div class="grid-box-head u-border-left">
               <el-row style="padding-left:15px;">
                 <el-col :span="1" class="u-replyOne">
-                  <div @click="handleReplyDialog(item.comment)">回复</div>
+                  <div @click="handleReplyDialog(item.comment,item.author)">回复</div>
                 </el-col>
                 <el-col :span="1" class="u-deleteOne">
                   <div @click="submitDeleteCommentForm(item)">删除</div>
@@ -336,39 +336,62 @@ export default {
         })
         .catch(err => console.log(err));
     },
-    handleReplyDialog(fromContent) {
-      this.replyForm.date = new Date().format("yyyy-MM-dd hh:mm");
-      this.replyForm.uid = this.$session.get("user").id;
-      this.replyForm.author = this.$session.get("user").nickname;
-      this.replyForm.from_nickname = this.article.author;
-      this.replyForm.from_content =
-        "<div style='color:red'>" + fromContent + "</div>";
-      this.replyForm.aid = this.$route.params.aid;
-      this.replyForm.sid = this.$route.params.sid;
-      this.dialogReplyVisible = true;
+    handleReplyDialog(fromContent, fromNickname) {
+      if (this.$session.get("user")) {
+        this.replyForm.date = new Date().format("yyyy-MM-dd hh:mm");
+        this.replyForm.uid = this.$session.get("user").id;
+        this.replyForm.author = this.$session.get("user").nickname;
+        this.replyForm.from_nickname = fromNickname;
+        this.replyForm.from_content =
+          "<div style='background-color: #e5e7ea;border-radius: 4px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;padding: 10px;margin-bottom: 10px;border: 1px dashed #333;'>" +
+          "<span style='font-weight: 900;padding-right: 5px;'>" +
+          this.$session.get("user").nickname +
+          "</span>" +
+          "对" +
+          "<span style='font-weight: 900;padding-left: 5px;padding-right: 5px;'>" +
+          this.replyForm.from_nickname +
+          "</span>" +
+          "的以下内容:" +
+          "</br>" +
+          "<span style='display: inline-block;line-height: 22px;'>" +
+          fromContent +
+          "</span>" +
+          "</br>" +
+          "<span style='font-weight: 900;'>进行回复:</span>" +
+          "</div>";
+        this.replyForm.aid = this.$route.params.aid;
+        this.replyForm.sid = this.$route.params.sid;
+        this.dialogReplyVisible = true;
+      } else {
+        this.$alert("请登录后再操作", "提示", {
+          confirmButtonText: "确定",
+          callback: () => {
+            this.$router.push({
+              name: "登录"
+            });
+          }
+        });
+      }
     },
     submitCommentForm() {
-      this.commentForm.date = new Date().format("yyyy-MM-dd hh:mm");
-      this.commentForm.uid = this.$session.get("user").id;
-      this.commentForm.author = this.$session.get("user").nickname;
-      this.commentForm.aid = this.$route.params.aid;
-      this.commentForm.sid = this.$route.params.sid;
-      console.log(this.commentForm);
-      api
-        .ajax("addComment/post", this.commentForm, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("添加成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                // this.$router.go(0);
-              }
+      if (this.$session.get("user")) {
+        this.commentForm.date = new Date().format("yyyy-MM-dd hh:mm");
+        this.commentForm.uid = this.$session.get("user").id;
+        this.commentForm.author = this.$session.get("user").nickname;
+        this.commentForm.aid = this.$route.params.aid;
+        this.commentForm.sid = this.$route.params.sid;
+        console.log(this.commentForm);
+        api.insert("addComment/post", this.commentForm, this);
+      } else {
+        this.$alert("请登录后再操作", "提示", {
+          confirmButtonText: "确定",
+          callback: () => {
+            this.$router.push({
+              name: "登录"
             });
-          } else {
-            MessageBox.alert("失败", "添加失败");
           }
-        })
-        .catch(err => console.log(err));
+        });
+      }
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -392,39 +415,40 @@ export default {
     submitReplyForm() {
       this.replyForm.comment =
         this.replyForm.from_content + this.replyForm.comment;
-      api
-        .ajax("addComment/post", this.replyForm, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("添加成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                this.$router.go(0);
-              }
-            });
-          } else {
-            MessageBox.alert("失败", "添加失败");
-          }
-        })
-        .catch(err => console.log(err));
+      api.insert("addComment/post", this.replyForm, this);
     },
     submitAddStar() {
-      api
-        .ajax(
-          "addArticleStar/post",
-          {
-            uid: this.$session.get("user").id,
-            aid: this.article.id
-          },
-          "post"
-        )
-        .then(res => {
-          if (res > 0) {
-            MessageBox.alert("成功", "收藏成功");
-          } else {
-            MessageBox.alert("失败", "收藏失败");
+      if (this.$session.get("user")) {
+        api
+          .ajax(
+            "addArticleStar/post",
+            {
+              uid: this.$session.get("user").id,
+              aid: this.article.id
+            },
+            "post"
+          )
+          .then(res => {
+            if (res == -1) {
+              MessageBox.alert("提示", "帖子已收藏");
+              return;
+            }
+            if (res > 0) {
+              MessageBox.alert("成功", "收藏成功");
+            } else {
+              MessageBox.alert("失败", "收藏失败");
+            }
+          });
+      } else {
+        this.$alert("请登录后再操作", "提示", {
+          confirmButtonText: "确定",
+          callback: () => {
+            this.$router.push({
+              name: "登录"
+            });
           }
         });
+      }
     }
   },
   components: {

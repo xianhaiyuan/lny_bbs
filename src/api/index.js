@@ -167,40 +167,6 @@ export default {
       });
     }
   },
-  select(src, params, dom, position) {
-    if (dom.$session.get('user')) {
-      if (position && dom.$session.get('user').position != position) {
-        dom.$alert("操作失败,权限不足", "失败", {
-          confirmButtonText: "确定"
-        });
-      } else {
-        this
-          .ajax(src, params, "post")
-          .then(res => {
-            if (res > 0) {
-              dom.$alert("添加成功", "成功", {
-                confirmButtonText: "确定",
-                callback: () => {
-                  dom.$router.go(0);
-                }
-              });
-            } else {
-              this.alert("失败", "添加失败");
-            }
-          })
-          .catch(err => console.log(err))
-      }
-    } else {
-      dom.$alert("请登录后再操作", "提示", {
-        confirmButtonText: "确定",
-        callback: () => {
-          dom.$router.push({
-            name: "登录"
-          })
-        }
-      });
-    }
-  },
   update(src, params, dom, opt, position) { //opt={alert,fresh,suc,err}
     if (dom.$session.get('user')) {
       if (position && dom.$session.get('user').position != position) {
