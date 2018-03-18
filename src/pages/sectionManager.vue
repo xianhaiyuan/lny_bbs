@@ -197,7 +197,6 @@ export default {
           .ajax("userAccusePage/get", { currentPage: val })
           .then(res => {
             this.userAccusePage = res;
-            console.log(res);
           })
           .catch(err => console.log(err));
       }

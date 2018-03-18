@@ -77,6 +77,7 @@ export default {
       api
         .ajax("onlineCount/get", {})
         .then(res => {
+          console.log(res);
           this.onlineCount = res;
         })
         .catch(err => {
