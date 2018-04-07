@@ -305,6 +305,26 @@ export default {
       .catch(err => console.log(err));
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
+  watch: {
+    $route(to, from) {
+      api
+        .ajax("articleBySidAid/get", {
+          sid: this.$route.params.sid,
+          aid: this.$route.params.aid
+        })
+        .then(res => {
+          this.article = res;
+          api
+            .ajax("commentPageByAid/get", { aid: res.id, currentPage: 1 })
+            .then(res => {
+              this.commentPage = res;
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+      this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
+    }
+  },
   beforeDestroy() {
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
