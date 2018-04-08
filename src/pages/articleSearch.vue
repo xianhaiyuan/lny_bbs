@@ -3,10 +3,11 @@
     <div class="m-list">
       <el-row class="m-item" v-for="(item,index) in searchPage.pageData" :key="item.id">
         <el-col :span="24">
-          <router-link :to="{name: '帖子',params:{sid:item.sid,aid:item.id}}" class="m-tit">{{item.title}}</router-link>
+          <router-link :to="{name: '帖子',params:{sid:item.sid,aid:item.id}}" class="m-tit" v-html="item.title">
+          </router-link>
         </el-col>
         <el-col class="m-content" :span="24">
-          <p>{{item.content}}</p>
+          <p v-html="item.content"></p>
           <p>...</p>
         </el-col>
         <el-col :span="24" class="m-etc">
