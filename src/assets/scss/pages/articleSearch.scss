@@ -1,0 +1,49 @@
+.m-articleSearch {
+  font-size: .9rem;
+  padding: {
+    top: 30px;
+    left: 30px;
+    right: 30px;
+  }
+  min-height: 512px;
+  background-color: #fff;
+  .m-item {
+    margin: {
+      bottom: 20px;
+    }
+  }
+  .m-tit {
+    font: {
+      size: 1.2rem;
+      weight: 900;
+    }
+    &:hover {
+      color: rgb(94, 94, 218);
+    }
+  }
+  .m-content {
+    padding: {
+      top: 20px;
+      bottom: 10px;
+    }
+    p {
+      text-indent: 30px;
+      display: inline-block;
+      max-width: 1111px;
+      max-height: 148px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.5rem;
+    }
+  }
+  .m-etc {
+    padding: {
+      bottom: 10px;
+    }
+    border-bottom: 1px solid #ccc;
+  }
+  .el-pagination {
+    text-align: right;
+    padding: 20px 0;
+  }
+}

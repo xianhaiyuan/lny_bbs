@@ -98,7 +98,7 @@ let router = new Router({
       },
       {
         name: "帖子搜索",
-        path: "articleSearch",
+        path: "articleSearch/:keyword",
         component: articleSearch
       }
     ]
