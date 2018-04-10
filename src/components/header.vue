@@ -2,6 +2,10 @@
   <div class="g-hd">
     <el-autocomplete v-model="keyword" :fetch-suggestions="querySearchAsync" @select="handleSelect" class="u-search" size="mini" placeholder="请输入帖子关键字" @keydown.enter.native="search($event)"></el-autocomplete>
     <div class="u-right-icon">
+      <span class="u-msg">
+        <img v-if="this.new_msg=='true'" @click="openMsg" src='../assets/img/icon-newMsg.png' alt="">
+        <img v-else @click="openMsg" src='../assets/img/icon-msg.png' alt="">
+      </span>
       <el-dropdown>
         <span class="el-dropdown-link">
           <img src="../assets/img/icon-setting.png" alt="">
@@ -30,15 +34,19 @@
 <script>
 import api from "../api";
 import MessageBox from "../utils/MessageBox";
+import { createNamespacedHelpers } from "vuex";
+const { mapActions } = createNamespacedHelpers("routeStore");
 export default {
   data() {
     return {
       touristCount: 0,
       keyword: "",
-      recommend: []
+      recommend: [],
+      new_msg: "false"
     };
   },
   methods: {
+    ...mapActions(["setRouteList", "setSocket"]),
     search(event) {
       if (this.keyword != "") {
         this.$router.push({
@@ -79,9 +87,42 @@ export default {
         name: "帖子",
         params: { sid: item.sid, aid: item.id }
       });
+    },
+    openMsg() {
+      let list = this.$session.get("msgList");
+      if (list) {
+        let msg = list.pop();
+        this.$session.set("msgList", list);
+        console.log(msg);
+        console.log("len:" + list.length);
+        if (list.length == 0) {
+          this.$session.set("new_msg", "false");
+          this.new_msg = "false";
+        }
+      }
     }
   },
   mounted() {
+    this.new_msg = this.$session.get("new_msg") || "false";
+    if (this.$session.get("user")) {
+      var socket = new WebSocket("ws://localhost:8080/bbs/websocket");
+      var _this = this;
+      socket.onmessage = function(ev) {
+        if (_this.$session.get("user")) {
+          var obj = eval("(" + ev.data + ")");
+          if (obj.to_id == _this.$session.get("user").id && obj.content != "") {
+            _this.new_msg = "true";
+            _this.$session.set("new_msg", "true");
+            var msgList = _this.$session.get("msgList")
+              ? _this.$session.get("msgList")
+              : [];
+            msgList.push(obj);
+            _this.$session.set("msgList", msgList);
+          }
+        }
+      };
+    }
+    this.setSocket(socket);
     api
       .ajax("searchArticlePage/get", { keyword: this.keyword, currentPage: 1 })
       .then(res => {
@@ -104,6 +145,12 @@ $hd-color: #eeeeee;
     bottom: 1px solid #ddd;
   }
   background-color: $hd-color;
+}
+.u-msg {
+  margin-right: 15px;
+  &:hover {
+    cursor: pointer;
+  }
 }
 .u-search {
   display: flex;

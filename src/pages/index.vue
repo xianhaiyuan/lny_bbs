@@ -32,7 +32,6 @@ export default {
     api
       .ajax("AllSection/get", {})
       .then(res => {
-        console.log(res);
         this.sections = res;
       })
       .catch(err => console.log(err));

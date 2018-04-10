@@ -30,6 +30,12 @@
     background: #F3F5FC;
     border-top: 1px solid #c3d9ff;
   }
+  .m-send {
+    color: blue;
+    &:hover {
+      cursor: pointer;
+    }
+  }
   .u-border-left {
     border-left: 1px solid #c3d9ff;
   }

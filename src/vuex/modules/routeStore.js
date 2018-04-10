@@ -1,22 +1,33 @@
 const state = {
-  routeList: []
+  routeList: [],
+  socket: {}
 }
 
 const getters = {
   routeList: state => {
     return state.routeList;
+  },
+  socket: state => {
+    return state.socket;
   }
 }
 
 const mutations = {
   setRouteList(state, val) {
     state.routeList = val
+  },
+  setSocket(state, val) {
+    console.log(val)
+    state.socket = val
   }
 }
 
 const actions = {
   setRouteList(context, val) {
     context.commit('setRouteList', val)
+  },
+  setSocket(context, val) {
+    context.commit('setSocket', val)
   }
 }
 

@@ -1,6 +1,4 @@
 <template>
-  <!-- <div class="article">this is article{{ $route.params.id }} </div>
-   -->
   <div class="m-article">
     <el-dialog title="回复" :visible.sync="dialogReplyVisible">
       <div class="m-edit">
@@ -23,7 +21,6 @@
         </el-col>
         <el-col :span="2">
           <div class="grid-box-tit u-star"><img @click="submitAddStar" src="../assets/img/star.png" alt="收藏帖子">
-            <!-- <div>已收藏</div> -->
           </div>
         </el-col>
       </el-row>
@@ -89,7 +86,7 @@
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/msg.png" alt="">
-                  <a href="#">发信</a>
+                  <div class="m-send" href="#" @click="handleMessageDialog(article.uid,article.author)">发信</div>
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/add.png" alt="">
@@ -133,9 +130,6 @@
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
                   <div>
-                    <!-- <span v-if="index == 0">沙发</span>
-                    <span v-else-if="index == 1">板凳</span>
-                    <span v-else>{{index}}楼</span> -->
                     <span v-if="commentPage.currentPage == 1">
                       <span v-if="index == 0">沙发</span>
                       <span v-else-if="index == 1">板凳</span>
@@ -187,7 +181,7 @@
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/msg.png" alt="">
-                  <a href="#">发信</a>
+                  <div class="m-send" href="#" @click="handleMessageDialog(item.uid,item.author)">发信</div>
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/add.png" alt="">
@@ -225,7 +219,15 @@
         </el-button>
       </div>
     </div>
-
+    <el-dialog title="发送信息" :visible.sync="sendMessageDialogVisible" width="30%" :before-close="handleClose">
+      <div style="margin-bottom:10px;">发送信息给
+        <strong>{{this.messageForm.to}}</strong>：</div>
+      <el-input type="textarea" :rows="4" v-model="messageForm.content"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="sendMessageDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="sendMessage()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -233,7 +235,7 @@
 import { createNamespacedHelpers } from "vuex";
 import api from "../api";
 import MessageBox from "../utils/MessageBox";
-const { mapActions } = createNamespacedHelpers("routeStore");
+const { mapActions, mapState } = createNamespacedHelpers("routeStore");
 import { quillEditor } from "vue-quill-editor";
 export default {
   data() {
@@ -275,6 +277,12 @@ export default {
         from_content: "",
         from_nickname: ""
       },
+      messageForm: {
+        from_id: "",
+        to: "",
+        from: "",
+        content: ""
+      },
       article: {},
       commentPage: {},
       dialogReplyVisible: false,
@@ -284,8 +292,12 @@ export default {
           toolbar: toolbarOptions
         }
         // something config
-      }
+      },
+      sendMessageDialogVisible: false
     };
+  },
+  computed: {
+    ...mapState(["socket"])
   },
   created() {
     api
@@ -330,6 +342,37 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
+    sendMessage() {
+      if (this.$session.get("user")) {
+        var obj = JSON.stringify(this.messageForm);
+        this.socket.send(obj);
+        this.sendMessageDialogVisible = false;
+        this.messageForm.content = "";
+      }
+    },
+    handleMessageDialog(uid, author) {
+      api
+        .ajax("checkOnline/get", { id: uid })
+        .then(res => {
+          if (res > 0) {
+            this.sendMessageDialogVisible = true;
+            this.messageForm.to_id = uid;
+            this.messageForm.to = author;
+            this.messageForm.from_id = this.$session.get("user").id;
+            this.messageForm.from = this.$session.get("user").nickname;
+          } else {
+            MessageBox.alert("提示", "用户不在线,无法发送消息");
+          }
+        })
+        .catch(err => console.log(err));
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
     onEditorChange({ editor, html, text }) {
       // console.log('editor change!', editor, html, text)
       console.log(html);

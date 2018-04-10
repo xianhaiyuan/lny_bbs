@@ -28,12 +28,13 @@ import vHeader from "../components/header";
 import vAside from "../components/aside";
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("routeStore");
+
 export default {
   data() {
     return {};
   },
   computed: {
-    ...mapState(["routeList"])
+    ...mapState(["routeList", "socket"])
   },
   created() {
     this.getRoutePath();
@@ -47,7 +48,7 @@ export default {
     //     vm.realList = JSON.parse(sessionStorage.getItem("routeList"));
     //   });
     // },
-    ...mapActions(["setRouteList"])
+    ...mapActions(["setRouteList", "setSocket"])
   },
   components: {
     vFooter,
