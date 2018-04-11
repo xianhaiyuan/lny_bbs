@@ -17,6 +17,7 @@ import addSection from '@/pages/addSection'
 import userInfo from '@/pages/userInfo'
 import userManager from '@/pages/userManager'
 import articleSearch from '@/pages/articleSearch'
+import friend from '@/pages/friend'
 
 
 Vue.use(Router)
@@ -67,7 +68,8 @@ let router = new Router({
         component: myStar
       }, {
         name: "好友",
-        path: 'friend/:uid'
+        path: 'friend/:uid',
+        component: friend
       }, {
         name: "举报",
         path: 'accuse',

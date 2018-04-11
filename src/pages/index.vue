@@ -7,7 +7,7 @@
           <router-link :to="{ name:'版面列表', params: { sid: sec.id }}" :class="['card-tit',{blue: index%3==0},{orange: index%3==1},{green: index%3==2}]">{{ sec.sec_name }}</router-link>
           <span style="float: right; padding: 3px 0;color:#F29C9F ;" type="text">{{ sec.sec_label}}</span>
         </div>
-        <div v-for="(item, index) in sec.articles" class="text item">
+        <div v-for="(item, index) in sec.articles" v-if="index<8" class="text item">
           <router-link :to="{ name:'帖子', params: {sid: item.sid, aid: item.id}}" style="display:block;">
             <span style="color:#ff3232;" v-if="item.art_label">【{{item.art_label}}】</span>
             {{ item.title }}</router-link>

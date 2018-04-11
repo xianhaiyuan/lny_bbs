@@ -86,11 +86,11 @@
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/msg.png" alt="">
-                  <div class="m-send" href="#" @click="handleMessageDialog(article.uid,article.author)">发信</div>
+                  <div class="u-send" href="#" @click="handleMessageDialog(article.uid,article.author)">发信</div>
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/add.png" alt="">
-                  <a href="#">加友</a>
+                  <div class="u-addf" @click="addFriend(article.uid)">加友</div>
                 </el-col>
               </el-row>
             </div>
@@ -181,11 +181,11 @@
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/msg.png" alt="">
-                  <div class="m-send" href="#" @click="handleMessageDialog(item.uid,item.author)">发信</div>
+                  <div class="u-send" href="#" @click="handleMessageDialog(item.uid,item.author)">发信</div>
                 </el-col>
                 <el-col :span="8">
                   <img src="../assets/img/add.png" alt="">
-                  <a href="#">加友</a>
+                  <div class="u-addf" @click="addFriend(item.uid)">加友</div>
                 </el-col>
               </el-row>
             </div>
@@ -343,29 +343,51 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
+    addFriend(fid) {
+      api
+        .ajax(
+          "addFriend/post",
+          { uid: this.$session.get("user").id, fid: fid },
+          "post"
+        )
+        .then(res => {
+          if (res > 0) {
+            MessageBox.alert("成功", "添加成功");
+          }
+          if (res == -1) {
+            MessageBox.alert("提示", "该好友已经添加");
+          }
+        });
+    },
     sendMessage() {
       if (this.$session.get("user")) {
         var obj = JSON.stringify(this.messageForm);
         this.socket.send(obj);
         this.sendMessageDialogVisible = false;
         this.messageForm.content = "";
+      } else {
+        MessageBox.alert("提示", "请登录后再操作");
       }
     },
     handleMessageDialog(uid, author) {
-      api
-        .ajax("checkOnline/get", { id: uid })
-        .then(res => {
-          if (res > 0) {
-            this.sendMessageDialogVisible = true;
-            this.messageForm.to_id = uid;
-            this.messageForm.to = author;
-            this.messageForm.from_id = this.$session.get("user").id;
-            this.messageForm.from = this.$session.get("user").nickname;
-          } else {
-            MessageBox.alert("提示", "用户不在线,无法发送消息");
-          }
-        })
-        .catch(err => console.log(err));
+      if (this.$session.get("user")) {
+        api
+          .ajax("checkOnline/get", { id: uid })
+          .then(res => {
+            if (res > 0) {
+              this.sendMessageDialogVisible = true;
+              this.messageForm.to_id = uid;
+              this.messageForm.to = author;
+              this.messageForm.from_id = this.$session.get("user").id;
+              this.messageForm.from = this.$session.get("user").nickname;
+            } else {
+              MessageBox.alert("提示", "用户不在线,无法发送消息");
+            }
+          })
+          .catch(err => console.log(err));
+      } else {
+        MessageBox.alert("提示", "请登录后再操作");
+      }
     },
     handleClose(done) {
       this.$confirm("确认关闭？")

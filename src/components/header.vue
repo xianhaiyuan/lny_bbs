@@ -41,7 +41,7 @@
     <el-dialog title="发送信息" :visible.sync="sendMessageDialogVisible" width="30%" :before-close="handleClose">
       <div style="margin-bottom:10px;" v-if="msg">发送信息给
         <strong>{{this.msg.from}}</strong>：</div>
-      <el-input type="textarea" :rows="4" v-model="messageForm.content"></el-input>
+      <el-input type="textarea" autofocus :rows="4" v-model="messageForm.content"></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="sendMessageDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="sendMessage()">确 定</el-button>

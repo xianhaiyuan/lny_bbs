@@ -65,7 +65,6 @@ export default {
         })
         .then(res => {
           this.articlePage = res;
-          console.log(res);
         })
         .catch(err => console.log(err));
     }
@@ -89,7 +88,6 @@ export default {
           })
           .then(res => {
             this.articlePage = res;
-            console.log(res);
           })
           .catch(err => console.log(err));
       }
