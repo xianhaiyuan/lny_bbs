@@ -29,24 +29,91 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog title="信息" :visible.sync="MessageDialogVisible" width="30%" :before-close="handleClose">
+      <div style="margin-bottom:10px;">
+        <strong v-if="msg">{{this.msg.from}}</strong>的来信</div>
+      <div v-if="msg" class="u-msgbox">{{this.msg.content}}</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="MessageDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="handleSendMessageDialog(msg.from_id,msg.from)">回 复</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="发送信息" :visible.sync="sendMessageDialogVisible" width="30%" :before-close="handleClose">
+      <div style="margin-bottom:10px;" v-if="msg">发送信息给
+        <strong>{{this.msg.from}}</strong>：</div>
+      <el-input type="textarea" :rows="4" v-model="messageForm.content"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="sendMessageDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="sendMessage()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import api from "../api";
 import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
-const { mapActions } = createNamespacedHelpers("routeStore");
+const { mapActions, mapState } = createNamespacedHelpers("routeStore");
 export default {
   data() {
     return {
       touristCount: 0,
       keyword: "",
       recommend: [],
-      new_msg: "false"
+      new_msg: "false",
+      MessageDialogVisible: false,
+      sendMessageDialogVisible: false,
+      messageForm: {
+        from_id: "",
+        to: "",
+        from: "",
+        content: ""
+      },
+      msg: {
+        from_id: "",
+        to: "",
+        from: "",
+        content: ""
+      }
     };
+  },
+  computed: {
+    ...mapState(["socket"])
   },
   methods: {
     ...mapActions(["setRouteList", "setSocket"]),
+    sendMessage() {
+      if (this.$session.get("user")) {
+        var obj = JSON.stringify(this.messageForm);
+        console.log("obj:" + obj);
+        this.socket.send(obj);
+        this.sendMessageDialogVisible = false;
+        this.messageForm.content = "";
+      }
+    },
+    handleSendMessageDialog(uid, author) {
+      api
+        .ajax("checkOnline/get", { id: uid })
+        .then(res => {
+          if (res > 0) {
+            this.sendMessageDialogVisible = true;
+            this.messageForm.to_id = uid;
+            this.messageForm.to = author;
+            this.messageForm.from_id = this.$session.get("user").id;
+            this.messageForm.from = this.$session.get("user").nickname;
+          } else {
+            MessageBox.alert("提示", "用户不在线,无法发送消息");
+          }
+        })
+        .catch(err => console.log(err));
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
     search(event) {
       if (this.keyword != "") {
         this.$router.push({
@@ -91,8 +158,12 @@ export default {
     openMsg() {
       let list = this.$session.get("msgList");
       if (list) {
-        let msg = list.pop();
+        let msg = list.shift();
         this.$session.set("msgList", list);
+        if (msg) {
+          this.MessageDialogVisible = true;
+          this.msg = msg;
+        }
         console.log(msg);
         console.log("len:" + list.length);
         if (list.length == 0) {
@@ -150,6 +221,16 @@ $hd-color: #eeeeee;
   margin-right: 15px;
   &:hover {
     cursor: pointer;
+  }
+}
+.u-msgbox {
+  border: 1px solid #ccc;
+  height: 100px;
+  overflow-y: auto;
+  text-indent: 1rem;
+  padding: {
+    top: 5px;
+    left: 5px;
   }
 }
 .u-search {
