@@ -1,5 +1,12 @@
 <template>
   <div class="m-articleSearch">
+    <div v-if="searchPage.pageData">
+      <div class="m-sorry" v-if="searchPage.pageData.length == 0">
+        <strong>抱歉,Sorry ...</strong>没有搜索到
+        <span style="color:red;">{{this.$route.params.keyword}}</span>
+        <p>换下关键字试试吧!</p>
+      </div>
+    </div>
     <div class="m-list">
       <el-row class="m-item" v-for="(item,index) in searchPage.pageData" :key="item.id">
         <el-col :span="24">

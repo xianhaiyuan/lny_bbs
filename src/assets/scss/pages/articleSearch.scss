@@ -7,6 +7,16 @@
   }
   min-height: 512px;
   background-color: #fff;
+  .m-sorry {
+    font-size: 1.2rem;
+    text-align: center;
+    strong {
+      font-size: 1.8rem;
+    }
+    p {
+      margin-top: 15px;
+    }
+  }
   .m-item {
     margin: {
       bottom: 20px;
