@@ -194,7 +194,6 @@ export default {
     api
       .ajax("searchArticlePage/get", { keyword: this.keyword, currentPage: 1 })
       .then(res => {
-        console.log(res);
         if (res.pageData) {
           res.pageData.forEach(element => {
             element.value = element.title;

@@ -3,7 +3,7 @@
     <el-tabs tab-position="top" style="height: 200px;">
       <el-tab-pane :label='this.$route.params.nickname+"的帖子"'>
         <el-dialog title="帖子内容" :visible.sync="dialogArticleVisible">
-          <div class="ql-container ql-snow" style="height:100%;width:100%;">
+          <div class="ql-container ql-snow" style="height:235px;width:100%;overflow-y:auto;">
             <div class="ql-editor" v-html="this.article"></div>
           </div>
         </el-dialog>
@@ -48,7 +48,7 @@
       <el-tab-pane :label="this.$route.params.nickname + '的评论'">
         <div class="block">
           <el-dialog title="评论内容" :visible.sync="dialogCommentVisible">
-            <div class="ql-container ql-snow" style="height:100%;width:100%;">
+            <div class="ql-container ql-snow" style="height:235px;width:100%;overflow-y:auto;">
               <div class="ql-editor" v-html="this.comment"></div>
             </div>
           </el-dialog>
