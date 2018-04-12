@@ -68,7 +68,6 @@ export default {
         })
         .then(res => {
           this.friendPage = res;
-          console.log(res);
         });
     }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
@@ -141,7 +140,6 @@ export default {
       }
     },
     handleDelete(fid) {
-      console.log(fid);
       api.delete(
         "removeFriend/post",
         { uid: this.$session.get("user").id, fid: fid },

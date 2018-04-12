@@ -17,7 +17,6 @@ const mutations = {
     state.routeList = val
   },
   setSocket(state, val) {
-    console.log(val)
     state.socket = val
   }
 }

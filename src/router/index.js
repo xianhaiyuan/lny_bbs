@@ -68,7 +68,7 @@ let router = new Router({
         component: myStar
       }, {
         name: "好友",
-        path: 'friend/:uid',
+        path: 'friend',
         component: friend
       }, {
         name: "举报",

@@ -77,7 +77,6 @@ export default {
       api
         .ajax("onlineCount/get", {})
         .then(res => {
-          console.log(res);
           this.onlineCount = res;
         })
         .catch(err => {
@@ -93,22 +92,27 @@ export default {
           api
             .ajax("login/post", this[formName], "post")
             .then(res => {
-              console.log(res);
+              var user = res;
               if (res.position == "版主") {
                 api
                   .ajax("sectionByUid/get", { uid: res.id })
                   .then(res => {
                     this.$session.set("section", res);
+                    this.$session.set("user", user);
+                    this.$router.push({
+                      name: "首页"
+                    });
                   })
                   .catch(err => console.log(err));
-              }
-              if (res) {
-                this.$session.set("user", res);
-                this.$router.push({
-                  name: "首页"
-                });
               } else {
-                MessageBox.alert("失败", "登录失败,请检查用户和密码");
+                if (user) {
+                  this.$session.set("user", user);
+                  this.$router.push({
+                    name: "首页"
+                  });
+                } else {
+                  MessageBox.alert("失败", "登录失败,请检查用户和密码");
+                }
               }
             })
             .catch(err => {

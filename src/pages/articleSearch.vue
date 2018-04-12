@@ -72,7 +72,6 @@ export default {
   },
   watch: {
     $route(to, from) {
-      console.log("keyword:" + this.$route.params.keyword);
       api
         .ajax("searchArticlePage/get", {
           keyword: this.$route.params.keyword,

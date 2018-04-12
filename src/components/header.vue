@@ -85,7 +85,6 @@ export default {
     sendMessage() {
       if (this.$session.get("user")) {
         var obj = JSON.stringify(this.messageForm);
-        console.log("obj:" + obj);
         this.socket.send(obj);
         this.sendMessageDialogVisible = false;
         this.messageForm.content = "";
@@ -129,6 +128,7 @@ export default {
         alert: false
       });
       this.$session.remove("user");
+      this.$session.remove("section");
       this.$router.push({ name: "登录" });
     },
     querySearchAsync(queryString, cb) {
@@ -136,7 +136,6 @@ export default {
       var results = queryString
         ? recommend.filter(this.createStateFilter(queryString))
         : recommend;
-
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
         cb(results);
@@ -164,8 +163,6 @@ export default {
           this.MessageDialogVisible = true;
           this.msg = msg;
         }
-        console.log(msg);
-        console.log("len:" + list.length);
         if (list.length == 0) {
           this.$session.set("new_msg", "false");
           this.new_msg = "false";
@@ -197,13 +194,15 @@ export default {
     api
       .ajax("searchArticlePage/get", { keyword: this.keyword, currentPage: 1 })
       .then(res => {
-        res.pageData.forEach(element => {
-          element.value = element.title;
-        });
+        console.log(res);
+        if (res.pageData) {
+          res.pageData.forEach(element => {
+            element.value = element.title;
+          });
+        }
         this.recommend = res.pageData;
       })
       .catch(err => console.log(err));
-    // this.recommend = this.loadAll();
   }
 };
 </script>

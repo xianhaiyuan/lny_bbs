@@ -21,7 +21,7 @@
           <span v-if="this.$session.get('user')">{{this.$session.get('user').position}}</span>
         </li>
         <li v-if="this.$session.get('section')">管理版块:
-          <span>{{this.$session.get('section').sec_name}}</span>
+          <span>{{this.$session.get("section").sec_name}}</span>
         </li>
       </ul>
     </div>
@@ -44,7 +44,7 @@ export default {
         },
         {
           name: "好友",
-          a_url: "#",
+          a_url: "/friend",
           img_name: "icon-friend"
         },
         {
