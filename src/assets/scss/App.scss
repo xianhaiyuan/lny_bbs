@@ -5,3 +5,10 @@ body {
   background-color: $bd-color;
   font-family: 宋体, "Lucida Grande", "Lucida Sans", Verdana, Arial, sans-serif;
 }
+
+.quill-editor {
+  height: 350px;
+  .ql-container {
+    height: 300px;
+  }
+}
