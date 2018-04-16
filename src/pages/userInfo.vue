@@ -5,6 +5,14 @@
         <div class="userInfo">
           <el-row :gutter="20">
             <el-col :span="1">
+              <div>ID</div>
+            </el-col>
+            <el-col :span="23">
+              <div class="u-bold">{{this.userData.id}}</div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="1">
               <div class="">头像</div>
             </el-col>
             <el-col :span="23">

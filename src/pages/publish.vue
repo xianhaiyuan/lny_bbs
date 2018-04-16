@@ -2,6 +2,7 @@
   <div class="publish">
     <el-input autofocus v-model="addArticleForm.title" placeholder="请输入帖子主题"></el-input>
     <quill-editor ref="myTextEditor" v-model="addArticleForm.content" :options="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)">
+      <div class="info">...</div>
     </quill-editor>
     <div class="u-btn">
       <el-button class="u-submit" type="primary" @click="submitAddArticleForm">提交
@@ -45,7 +46,7 @@ export default {
     return {
       addArticleForm: {
         title: "",
-        content: "<h2>I am Example</h2>",
+        content: "<i>请在此处输入帖子内容...</i>",
         uid: this.$session.get("user").id,
         author: this.$session.get("user").nickname,
         date: "",
