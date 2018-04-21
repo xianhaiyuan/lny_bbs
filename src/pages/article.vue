@@ -37,8 +37,8 @@
                 <el-col :span="1" class="u-replyOne">
                   <div @click="handleReplyDialog(article.content,article.author)">回复</div>
                 </el-col>
-                <el-col :span="1" class="u-deleteOne" v-if="handleDeleteVisible">
-                  <div @click="submitDeleteArticleForm(article)">删除</div>
+                <el-col :span="1" class="u-deleteOne">
+                  <div v-if="handleDeleteVisible" @click="submitDeleteArticleForm(article)">删除</div>
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
                   <div>楼主</div>
@@ -127,8 +127,8 @@
                 <el-col :span="1" class="u-replyOne">
                   <div @click="handleReplyDialog(item.comment,item.author)">回复</div>
                 </el-col>
-                <el-col :span="1" class="u-deleteOne" v-if="handleDeleteVisible">
-                  <div @click="submitDeleteCommentForm(item)">删除</div>
+                <el-col :span="1" class="u-deleteOne">
+                  <div v-if="handleDeleteVisible" @click="submitDeleteCommentForm(item)">删除</div>
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
                   <div>
