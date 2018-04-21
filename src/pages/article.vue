@@ -99,11 +99,13 @@
             <div class="grid-box-foot u-border-left">
               <el-row class="u-praise-blame">
                 <el-col :span="2">
+                  <img @click="submitArticlePraise(article)" src="../assets/img/praise.png" alt="" style="margin-bottom: 4px;">{{article.praise}}
                 </el-col>
                 <el-col :span="2">
+                  <img @click="submitArticleBlame(article)" src="../assets/img/blame.png" alt="">{{article.blame}}
                 </el-col>
                 <el-col :span="3" :offset="17">
-                  {{this.article.date}}
+                  {{article.date}}
                 </el-col>
               </el-row>
             </div>
@@ -417,9 +419,26 @@ export default {
         })
         .catch(err => console.log(err));
     },
+
     submitCommentBlame(item) {
       api
         .ajax("commentBlame/post", { id: item.id }, "post")
+        .then(res => {
+          if (res > 0) item.blame += 1;
+        })
+        .catch(err => console.log(err));
+    },
+    submitArticlePraise(item) {
+      api
+        .ajax("articlePraise/post", { id: item.id }, "post")
+        .then(res => {
+          if (res > 0) item.praise += 1;
+        })
+        .catch(err => console.log(err));
+    },
+    submitArticleBlame(item) {
+      api
+        .ajax("articleBlame/post", { id: item.id }, "post")
         .then(res => {
           if (res > 0) item.blame += 1;
         })
@@ -510,7 +529,8 @@ export default {
             "addArticleStar/post",
             {
               uid: this.$session.get("user").id,
-              aid: this.article.id
+              aid: this.article.id,
+              date: new Date().format("yyyy-MM-dd hh:mm")
             },
             "post"
           )
