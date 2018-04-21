@@ -52,14 +52,13 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
+      <el-pagination @current-change="handleCurrentChange" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import MessageBox from "../utils/MessageBox";
 import { createNamespacedHelpers } from "vuex";
 import api from "../api";
 const { mapActions } = createNamespacedHelpers("routeStore");
@@ -107,6 +106,8 @@ export default {
           this.articlePage = res;
         })
         .catch(err => console.log(err));
+    } else {
+      this.$router.push({ name: "登录" });
     }
 
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
@@ -116,9 +117,6 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
       if (this.$session.get("user")) {
         api

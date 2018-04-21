@@ -1,7 +1,7 @@
 <template>
   <div class="m-userSetting">
     <el-form :model="settingForm" status-icon :rules="rules" ref="settingForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="头像">
+      <el-form-item label="头像" v-if="this.$session.get('user')">
         <div class="el-upload el-upload--picture-card" @click="avatar_click">
           <img v-if="dialogVisible" width="100%" :src="dialogImageUrl" alt="">
           <img v-else-if="settingForm.avatar" width="100%" :src="settingForm.avatar" alt="">
@@ -9,10 +9,10 @@
           <input type="file" @change="onFileChange($event)" ref="avatar" class="el-upload__input">
         </div>
       </el-form-item>
-      <el-form-item label="昵称" prop="nickname" size="small" required>
+      <el-form-item label="昵称" prop="nickname" size="small" required v-if="this.$session.get('user')">
         <el-input type="text" v-model="settingForm.nickname" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="年级" prop="grade">
+      <el-form-item label="年级" prop="grade" v-if="this.$session.get('user')">
         <el-select v-model="settingForm.grade" placeholder="请选择你的年级">
           <el-option label="大一" value="大一"></el-option>
           <el-option label="大二" value="大二"></el-option>
@@ -22,19 +22,19 @@
           <el-option label="老师" value="老师"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="邮箱" prop="email" size="small">
+      <el-form-item label="邮箱" prop="email" size="small" v-if="this.$session.get('user')">
         <el-input type="text" v-model="settingForm.email" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="性别" prop="sex" size="small ">
+      <el-form-item label="性别" prop="sex" size="small" v-if="this.$session.get('user')">
         <el-radio-group v-model="settingForm.sex">
           <el-radio label="男"></el-radio>
           <el-radio label="女"></el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="生日" prop="birthday" size="small ">
+      <el-form-item label="生日" prop="birthday" size="small" v-if="this.$session.get('user')">
         <el-date-picker type="date" placeholder="选择日期" v-model="settingForm.birthday" style="width: 250px;" value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="this.$session.get('user')">
         <el-button type="primary" @click="submitForm('settingForm')">提交</el-button>
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
@@ -83,6 +83,9 @@ export default {
     };
   },
   created() {
+    if (!this.$session.get("user")) {
+      this.$router.push({ name: "登录" });
+    }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -178,15 +181,7 @@ export default {
     },
     cancel() {
       this.$router.go(-1);
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
     }
-    // handlePictureCardPreview(file) {
-    //   this.dialogImageUrl = file.url;
-    //   this.dialogVisible = true;
-    //   console.log(file);
-    // }
   }
 };
 </script>

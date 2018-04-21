@@ -167,6 +167,8 @@ export default {
           this.$session.set("new_msg", "false");
           this.new_msg = "false";
         }
+      } else {
+        MessageBox.alert("提示", "暂时没有信息");
       }
     }
   },

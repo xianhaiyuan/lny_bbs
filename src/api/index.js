@@ -188,7 +188,7 @@ export default {
                 });
               }
             } else {
-              this.alert("失败", opt.err);
+              dom.$alert(opt.err, "失败");
             }
           })
           .catch(err => console.log(err))

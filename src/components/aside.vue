@@ -26,7 +26,7 @@
       </ul>
     </div>
     <div class="m-nav">
-      <router-link v-for="(item, index) in navs" @click.native="addClass(index)" :class="{'u-cur':index==cur}" :key="item.id" :to="{name: item.name}"><img :src='"../assets/img/" +item.img_name +".png"' alt="">{{ item.name }}</router-link>
+      <router-link v-for="(item, index) in navs" v-show="item.show" @click.native="addClass(index)" :class="{'u-cur':index==cur}" :key="item.id" :to="{name: item.name}"><img :src='"../assets/img/" +item.img_name +".png"' alt="">{{ item.name }}</router-link>
     </div>
   </div>
 </template>
@@ -40,37 +40,48 @@ export default {
         {
           name: "首页",
           a_url: "/",
-          img_name: "icon-home"
+          img_name: "icon-home",
+          show: true
         },
         {
           name: "好友",
           a_url: "/friend",
-          img_name: "icon-friend"
+          img_name: "icon-friend",
+          show: true
         },
         {
           name: "我的帖子",
           a_url: "/myArticle",
-          img_name: "icon-page"
+          img_name: "icon-page",
+          show: true
         },
         {
           name: "我的收藏",
           a_url: "/myStar",
-          img_name: "icon-star"
+          img_name: "icon-star",
+          show: true
         },
         {
           name: "版主管理",
           a_url: "/sectionManager",
-          img_name: "icon-sectionManager"
+          img_name: "icon-sectionManager",
+          show: this.$session.get("section")
         },
         {
           name: "版块增删",
           a_url: "/sectionAdmin",
-          img_name: "icon-addSection"
+          img_name: "icon-addSection",
+          show: this.$session.get("user")
+            ? this.$session.get("user").position === "系统管理员"
+            : false
         },
         {
           name: "用户管理",
           a_url: "/userManager",
-          img_name: "icon-userManager"
+          img_name: "icon-userManager",
+          show: this.$session.get("user")
+            ? this.$session.get("user").position === "系统管理员"
+            : false
         }
       ]
     };

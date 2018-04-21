@@ -23,7 +23,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="friendPage.pageSize" layout="prev, pager, next, jumper" :total="friendPage.totalCount">
+      <el-pagination @current-change="handleCurrentChange" :page-size="friendPage.pageSize" layout="prev, pager, next, jumper" :total="friendPage.totalCount">
       </el-pagination>
     </div>
     <el-dialog title="发送信息" :visible.sync="sendMessageDialogVisible" width="30%" :before-close="handleClose">
@@ -69,6 +69,8 @@ export default {
         .then(res => {
           this.friendPage = res;
         });
+    } else {
+      this.$router.push({ name: "登录" });
     }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
@@ -122,11 +124,8 @@ export default {
         }
       });
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
-      if (this.$session.get("user") != null) {
+      if (this.$session.get("user")) {
         api
           .ajax("friendPageByUid/get", {
             uid: this.$session.get("user").id,

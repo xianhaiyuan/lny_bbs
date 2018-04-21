@@ -29,7 +29,7 @@
         </el-table-column>
 
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
+      <el-pagination @current-change="handleCurrentChange" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
       </el-pagination>
     </div>
   </div>
@@ -62,9 +62,6 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
       api
         .ajax("articlePageBySid/get", {

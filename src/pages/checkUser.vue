@@ -41,7 +41,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
+          <el-pagination @current-change="handleCurrentChange1" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -85,7 +85,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="commentPage.pageSize" layout="prev, pager, next, jumper" :total="commentPage.totalCount">
+          <el-pagination @current-change="handleCurrentChange2" :page-size="commentPage.pageSize" layout="prev, pager, next, jumper" :total="commentPage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -179,6 +179,9 @@ export default {
     };
   },
   created() {
+    if (!this.$session.get("user")) {
+      this.$router.push({ name: "登录" });
+    }
     api
       .ajax("articlePageByUid/get", {
         uid: this.$route.params.uid,
@@ -204,9 +207,6 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
-    handleSizeChange1(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange1(val) {
       api
         .ajax("articlePageByUid/get", {
@@ -217,9 +217,6 @@ export default {
           this.articlePage = res;
         })
         .catch(err => console.log(err));
-    },
-    handleSizeChange2(val) {
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange2(val) {
       api
@@ -245,11 +242,6 @@ export default {
     },
     commentDelete(index, row) {
       api.delete("removeCommentById/post", { id: row.id }, this, "版主");
-    },
-    onEditorChange({ editor, html, text }) {
-      // console.log('editor change!', editor, html, text)
-      this.article = html;
-      console.log(html);
     }
   }
 };

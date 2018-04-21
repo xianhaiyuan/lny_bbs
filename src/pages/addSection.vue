@@ -47,7 +47,7 @@
         </el-table-column>
       </el-table>
 
-      <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="sectionPage.pageSize" layout="prev, pager, next, jumper" :total="sectionPage.totalCount">
+      <el-pagination @current-change="handleCurrentChange1" :page-size="sectionPage.pageSize" layout="prev, pager, next, jumper" :total="sectionPage.totalCount">
       </el-pagination>
     </div>
 
@@ -84,12 +84,20 @@ export default {
     };
   },
   created() {
-    api
-      .ajax("sectionPage/get", { currentPage: 1 })
-      .then(res => {
-        this.sectionPage = res;
-      })
-      .catch(err => console.log(err));
+    if (this.$session.get("user")) {
+      if (this.$session.get("user").position == "系统管理员") {
+        api
+          .ajax("sectionPage/get", { currentPage: 1 })
+          .then(res => {
+            this.sectionPage = res;
+          })
+          .catch(err => console.log(err));
+      } else {
+        this.$router.push({ name: "登录" });
+      }
+    } else {
+      this.$router.push({ name: "登录" });
+    }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -111,11 +119,7 @@ export default {
       );
       this.dialogEditVisible = false;
     },
-    handleSizeChange1(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange1(val) {
-      console.log(val);
       api
         .ajax("sectionPage/get", { currentPage: val })
         .then(res => {
@@ -132,15 +136,12 @@ export default {
         "系统管理员"
       );
     },
-    handleAdd(index, row) {
+    handleAdd() {
       this.dialogAddVisible = true;
     },
     handleEdit(index, row) {
       this.editSectionForm = row;
       this.dialogEditVisible = true;
-    },
-    handleRelease(index, row) {
-      console.log(index);
     },
     addFormSubmit() {
       api.insert("addSection/post", this.addSectionForm, this, "系统管理员");

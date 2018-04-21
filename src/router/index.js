@@ -21,7 +21,6 @@ import friend from '@/pages/friend'
 
 
 Vue.use(Router)
-
 let router = new Router({
   mode: 'history',
   routes: [{

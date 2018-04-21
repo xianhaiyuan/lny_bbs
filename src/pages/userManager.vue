@@ -38,7 +38,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="userSectionPage.pageSize" layout="prev, pager, next, jumper" :total="userSectionPage.totalCount">
+          <el-pagination @current-change="handleCurrentChange1" :page-size="userSectionPage.pageSize" layout="prev, pager, next, jumper" :total="userSectionPage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -63,7 +63,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="userBanPage.pageSize" layout="prev, pager, next, jumper" :total="userBanPage.totalCount">
+          <el-pagination @current-change="handleCurrentChange2" :page-size="userBanPage.pageSize" layout="prev, pager, next, jumper" :total="userBanPage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -84,19 +84,26 @@ export default {
     };
   },
   created() {
-    api
-      .ajax("userSectionPage/get", { currentPage: 1 })
-      .then(res => {
-        this.userSectionPage = res;
+    if (this.$session.get("user")) {
+      if (this.$session.get("user").position == "系统管理员") {
         api
-          .ajax("userBanPage/get", { currentPage: 1 })
+          .ajax("userSectionPage/get", { currentPage: 1 })
           .then(res => {
-            this.userBanPage = res;
+            this.userSectionPage = res;
+            api
+              .ajax("userBanPage/get", { currentPage: 1 })
+              .then(res => {
+                this.userBanPage = res;
+              })
+              .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
-      })
-      .catch(err => console.log(err));
-
+      } else {
+        this.$router.push({ name: "登录" });
+      }
+    } else {
+      this.$router.push({ name: "登录" });
+    }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -142,7 +149,7 @@ export default {
               if (res > 0) {
                 MessageBox.alert("成功", "提交成功");
               } else {
-                MessageBox.alert("失败", "失败");
+                MessageBox.alert("失败", "修改失败");
               }
             })
             .catch(err => console.log(err));
@@ -150,9 +157,6 @@ export default {
           MessageBox.alert("失败", "操作失败,权限不足");
         }
       }
-    },
-    handleSizeChange1(val) {
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
       api
@@ -162,9 +166,6 @@ export default {
           this.userSectionPage = res;
         })
         .catch(err => console.log(err));
-    },
-    handleSizeChange2(val) {
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange2(val) {
       api

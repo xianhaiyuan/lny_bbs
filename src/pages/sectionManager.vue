@@ -58,7 +58,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
+          <el-pagination @current-change="handleCurrentChange1" :page-size="articlePage.pageSize" layout="prev, pager, next, jumper" :total="articlePage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -84,7 +84,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-size="userAccusePage.pageSize" layout="prev, pager, next, jumper" :total="userAccusePage.totalCount">
+          <el-pagination @current-change="handleCurrentChange2" :page-size="userAccusePage.pageSize" layout="prev, pager, next, jumper" :total="userAccusePage.totalCount">
           </el-pagination>
         </div>
       </el-tab-pane>
@@ -149,6 +149,8 @@ export default {
             .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
+    } else {
+      this.$router.push({ name: "登录" });
     }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
@@ -158,7 +160,6 @@ export default {
   methods: {
     ...mapActions(["setRouteList"]),
     submitEditArticleForm() {
-      console.log(this.editArticleForm);
       api.update(
         "changeArticle/post",
         this.editArticleForm,
@@ -171,9 +172,6 @@ export default {
         "版主"
       );
       this.dialogEditVisible = false;
-    },
-    handleSizeChange1(val) {
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange1(val) {
       if (this.$session.get("section")) {
@@ -188,9 +186,6 @@ export default {
           .catch(err => console.log(err));
       }
     },
-    handleSizeChange2(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange2(val) {
       if (this.$session.get("section")) {
         api
@@ -202,7 +197,9 @@ export default {
       }
     },
     handleDelete(index, row) {
-      api.delete("removeArticleById/post", row, this, "版主");
+      if (this.$session.get("section")) {
+        api.delete("removeArticleById/post", row, this, "版主");
+      }
     },
     handleEdit(index, row) {
       this.dialogEditVisible = true;
@@ -223,7 +220,6 @@ export default {
       );
     },
     handleRelease(index, row) {
-      console.log(row.id);
       api.update(
         "UnaccuseUser/post",
         { id: row.id },

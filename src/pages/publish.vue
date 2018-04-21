@@ -1,7 +1,7 @@
 <template>
   <div class="publish">
     <el-input autofocus v-model="addArticleForm.title" placeholder="请输入帖子主题"></el-input>
-    <quill-editor ref="myTextEditor" v-model="addArticleForm.content" :options="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)">
+    <quill-editor ref="myTextEditor" v-model="addArticleForm.content" :options="editorOption">
     </quill-editor>
     <div class="u-btn">
       <el-button class="u-submit" type="primary" @click="submitAddArticleForm">提交
@@ -46,8 +46,10 @@ export default {
       addArticleForm: {
         title: "",
         content: "请在此处输入帖子内容...",
-        uid: this.$session.get("user").id,
-        author: this.$session.get("user").nickname,
+        uid: this.$session.get("user") ? this.$session.get("user").id : null,
+        author: this.$session.get("user")
+          ? this.$session.get("user").nickname
+          : null,
         date: "",
         sid: this.$route.params.sid
       },
@@ -62,33 +64,27 @@ export default {
   },
   methods: {
     ...mapActions(["setRouteList"]),
-    onEditorBlur(editor) {
-      // console.log("editor blur!", editor.getContents());
-    },
-    onEditorFocus(editor) {
-      // console.log("editor focus!", editor);
-    },
-    onEditorReady(editor) {
-      // console.log("editor ready!", editor);
-    },
-    onEditorChange({ editor, html, text }) {},
     submitAddArticleForm() {
       this.addArticleForm.date = new Date().format("yyyy-MM-dd hh:mm");
-      api
-        .ajax("addArticle/post", this.addArticleForm, "post")
-        .then(res => {
-          if (res > 0) {
-            this.$alert("添加成功", "成功", {
-              confirmButtonText: "确定",
-              callback: () => {
-                this.$router.go(-1);
-              }
-            });
-          } else {
-            MessageBox.alert("失败", "添加失败");
-          }
-        })
-        .catch(err => console.log(err));
+      if (this.$session.get("user")) {
+        api
+          .ajax("addArticle/post", this.addArticleForm, "post")
+          .then(res => {
+            if (res > 0) {
+              this.$alert("添加成功", "成功", {
+                confirmButtonText: "确定",
+                callback: () => {
+                  this.$router.go(-1);
+                }
+              });
+            } else {
+              MessageBox.alert("失败", "添加失败");
+            }
+          })
+          .catch(err => console.log(err));
+      } else {
+        MessageBox.alert("失败", "请登录后再操作");
+      }
     }
   },
   computed: {
@@ -100,6 +96,9 @@ export default {
     quillEditor
   },
   created() {
+    if (!this.$session.get("user")) {
+      this.$router.push({ name: "登录" });
+    }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {

@@ -106,6 +106,13 @@ export default {
                   .catch(err => console.log(err));
               } else {
                 if (user) {
+                  if (user.ban == 1) {
+                    MessageBox.alert(
+                      "提示",
+                      "你的账号已被封锁,请联系相关工作人员"
+                    );
+                    return;
+                  }
                   this.$session.set("user", user);
                   this.$router.push({
                     name: "首页"

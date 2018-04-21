@@ -37,7 +37,7 @@
                 <el-col :span="1" class="u-replyOne">
                   <div @click="handleReplyDialog(article.content,article.author)">回复</div>
                 </el-col>
-                <el-col :span="1" class="u-deleteOne">
+                <el-col :span="1" class="u-deleteOne" v-if="handleDeleteVisible">
                   <div @click="submitDeleteArticleForm(article)">删除</div>
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
@@ -125,7 +125,7 @@
                 <el-col :span="1" class="u-replyOne">
                   <div @click="handleReplyDialog(item.comment,item.author)">回复</div>
                 </el-col>
-                <el-col :span="1" class="u-deleteOne">
+                <el-col :span="1" class="u-deleteOne" v-if="handleDeleteVisible">
                   <div @click="submitDeleteCommentForm(item)">删除</div>
                 </el-col>
                 <el-col :span="1" :offset="21" class="u-floor">
@@ -208,7 +208,7 @@
         </el-row>
       </div>
     </div>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="commentPage.pageSize" layout="prev, pager, next, jumper" :total="commentPage.totalCount">
+    <el-pagination @current-change="handleCurrentChange" :page-size="commentPage.pageSize" layout="prev, pager, next, jumper" :total="commentPage.totalCount">
     </el-pagination>
     <div class="m-reply">
       <quill-editor ref="myTextEditor" v-model="commentForm.comment" :options="editorOption">
@@ -294,7 +294,10 @@ export default {
         }
         // something config
       },
-      sendMessageDialogVisible: false
+      sendMessageDialogVisible: false,
+      handleDeleteVisible: this.$session.get("user")
+        ? this.$session.get("user").position === "系统管理员"
+        : false
     };
   },
   computed: {
@@ -344,20 +347,24 @@ export default {
   methods: {
     ...mapActions(["setRouteList"]),
     addFriend(fid) {
-      api
-        .ajax(
-          "addFriend/post",
-          { uid: this.$session.get("user").id, fid: fid },
-          "post"
-        )
-        .then(res => {
-          if (res > 0) {
-            MessageBox.alert("成功", "添加成功");
-          }
-          if (res == -1) {
-            MessageBox.alert("提示", "该好友已经添加");
-          }
-        });
+      if (this.$session.get("user")) {
+        api
+          .ajax(
+            "addFriend/post",
+            { uid: this.$session.get("user").id, fid: fid },
+            "post"
+          )
+          .then(res => {
+            if (res > 0) {
+              MessageBox.alert("成功", "添加成功");
+            }
+            if (res == -1) {
+              MessageBox.alert("提示", "该好友已经添加");
+            }
+          });
+      } else {
+        MessageBox.alert("提示", "请登录后再操作");
+      }
     },
     sendMessage() {
       if (this.$session.get("user")) {
@@ -395,10 +402,6 @@ export default {
           done();
         })
         .catch(_ => {});
-    },
-    onEditorChange({ editor, html, text }) {
-      // console.log('editor change!', editor, html, text)
-      console.log(html);
     },
     submitDeleteArticleForm(item) {
       api.delete("removeArticleById/post", { id: item.id }, this, "系统管理员");
@@ -478,9 +481,6 @@ export default {
           }
         });
       }
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       if (val == 1) {

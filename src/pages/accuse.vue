@@ -36,6 +36,9 @@ export default {
     };
   },
   created() {
+    if (!this.$session.get("user")) {
+      this.$router.push({ name: "登录" });
+    }
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
   },
   beforeDestroy() {
@@ -49,7 +52,7 @@ export default {
           api.update("accuseUser/post", { id: this[formName].userid }, this, {
             alert: true,
             suc: "举报成功",
-            err: "举报失败"
+            err: "举报失败,该用户不存在"
           });
         } else {
           console.log("error submit!!");
