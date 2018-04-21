@@ -127,8 +127,7 @@ export default {
       api.update("unLogin/post", { id: this.$session.get("user").id }, this, {
         alert: false
       });
-      this.$session.remove("user");
-      this.$session.remove("section");
+      this.$session.clear();
       this.$router.push({ name: "登录" });
     },
     querySearchAsync(queryString, cb) {
