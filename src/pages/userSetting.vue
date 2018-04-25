@@ -142,7 +142,13 @@ export default {
                   return;
                 }
                 this.$session.set("user", res);
-                MessageBox.alert("成功", "个人信息修改成功");
+                // MessageBox.alert("成功", "个人信息修改成功");
+                this.$alert("个人信息修改成功", "成功", {
+                  confirmButtonText: "确定",
+                  callback: () => {
+                    this.$router.go(0);
+                  }
+                });
               })
               .catch(err => {
                 console.log(err);
@@ -167,7 +173,13 @@ export default {
                 }
 
                 this.$session.set("user", res);
-                MessageBox.alert("成功", "个人信息修改成功");
+                // MessageBox.alert("成功", "个人信息修改成功");
+                this.$alert("个人信息修改成功", "成功", {
+                  confirmButtonText: "确定",
+                  callback: () => {
+                    this.$router.go(0);
+                  }
+                });
               })
               .catch(err => {
                 console.log(err);

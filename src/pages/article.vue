@@ -51,7 +51,7 @@
           <el-col :span="4">
             <div class="grid-box-aside">
               <div class="m-avatar">
-                <img src="../assets/logo.png" alt="">
+                <img :src="article.avatar" alt="">
               </div>
               <div class="m-profile">
                 <ul>
@@ -148,7 +148,7 @@
           <el-col :span="4">
             <div class="grid-box-aside">
               <div class="m-avatar">
-                <img src="../assets/logo.png" alt="">
+                <img :src="item.avatar" alt="">
               </div>
               <div class="m-profile">
                 <ul>

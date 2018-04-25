@@ -67,21 +67,25 @@ export default {
     submitAddArticleForm() {
       this.addArticleForm.date = new Date().format("yyyy-MM-dd hh:mm");
       if (this.$session.get("user")) {
-        api
-          .ajax("addArticle/post", this.addArticleForm, "post")
-          .then(res => {
-            if (res > 0) {
-              this.$alert("添加成功", "成功", {
-                confirmButtonText: "确定",
-                callback: () => {
-                  this.$router.go(-1);
-                }
-              });
-            } else {
-              MessageBox.alert("失败", "添加失败");
-            }
-          })
-          .catch(err => console.log(err));
+        if (this.addArticleForm.title && this.addArticleForm.content) {
+          api
+            .ajax("addArticle/post", this.addArticleForm, "post")
+            .then(res => {
+              if (res > 0) {
+                this.$alert("添加成功", "成功", {
+                  confirmButtonText: "确定",
+                  callback: () => {
+                    this.$router.go(-1);
+                  }
+                });
+              } else {
+                MessageBox.alert("失败", "添加失败");
+              }
+            })
+            .catch(err => console.log(err));
+        } else {
+          MessageBox.alert("失败", "请输入完整后再提交");
+        }
       } else {
         MessageBox.alert("失败", "请登录后再操作");
       }

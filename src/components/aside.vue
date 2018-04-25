@@ -11,9 +11,6 @@
         <li>昵称:
           <span v-if="this.$session.get('user')">{{this.$session.get('user').nickname}}</span>
         </li>
-        <li>文章:
-          <span v-if="this.$session.get('user')">{{this.$session.get('user').article_count}}</span>
-        </li>
         <li>性别:
           <span v-if="this.$session.get('user')">{{this.$session.get('user').sex}}</span>
         </li>
@@ -163,12 +160,12 @@ $asd-color: #293134;
     text-decoration: none;
     text-indent: 6px;
     &:hover {
-      border-left: 4px #e97c62 solid;
+      border-left: 4px #00c6d7 solid;
       padding-left: 21px;
     }
     &.u-cur {
       background-color: #191d1f;
-      border-left: 4px #e97c62 solid;
+      border-left: 4px #00c6d7 solid;
       padding-left: 21px;
     }
     img {
