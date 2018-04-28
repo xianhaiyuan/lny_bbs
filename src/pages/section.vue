@@ -5,7 +5,8 @@
       <el-table :data="articlePage.pageData" style="width: 100%" stripe>
         <el-table-column label="主题" width="600">
           <template slot-scope="scope">
-            <router-link :to="{ name:'帖子', params: { sid: $route.params.sid, aid: scope.row.id }}">{{scope.row.title}}</router-link>
+            <router-link :to="{ name:'帖子', params: { sid: $route.params.sid, aid: scope.row.id }}">
+              <span style="color:#ff3232;" v-if="scope.row.art_label">【{{scope.row.art_label}}】</span>{{scope.row.title}}</router-link>
           </template>
         </el-table-column>
 

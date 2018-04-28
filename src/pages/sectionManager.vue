@@ -8,6 +8,7 @@
             <el-select v-model="editArticleForm.art_label" placeholder="请选择帖子标签">
               <el-option label="置顶" value="置顶"></el-option>
               <el-option label="精华" value="精华"></el-option>
+              <el-option label="无" value=""></el-option>
             </el-select>
             <quill-editor ref="myTextEditor" v-model="editArticleForm.content" :options="editorOption">
             </quill-editor>
