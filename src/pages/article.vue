@@ -51,7 +51,8 @@
           <el-col :span="4">
             <div class="grid-box-aside">
               <div class="m-avatar">
-                <img :src="article.avatar" alt="">
+                <img v-if="article.avatar" :src="article.avatar" alt="">
+                <img v-else src="/static/avatar/avatar.png" alt="">
               </div>
               <div class="m-profile">
                 <ul>
@@ -148,7 +149,8 @@
           <el-col :span="4">
             <div class="grid-box-aside">
               <div class="m-avatar">
-                <img :src="item.avatar" alt="">
+                <img v-if="item.avatar" :src="item.avatar" alt="">
+                <img v-else src="/static/avatar/avatar.png" alt="">
               </div>
               <div class="m-profile">
                 <ul>
@@ -312,6 +314,7 @@ export default {
         aid: this.$route.params.aid
       })
       .then(res => {
+        console.log(res);
         this.article = res;
         api
           .ajax("commentPageByAid/get", { aid: res.id, currentPage: 1 })
