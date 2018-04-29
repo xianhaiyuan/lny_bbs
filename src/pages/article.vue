@@ -491,7 +491,6 @@ export default {
         this.commentForm.author = this.$session.get("user").nickname;
         this.commentForm.aid = this.$route.params.aid;
         this.commentForm.sid = this.$route.params.sid;
-        console.log(this.commentForm);
         api.insert("addComment/post", this.commentForm, this);
       } else {
         this.$alert("请登录后再操作", "提示", {
