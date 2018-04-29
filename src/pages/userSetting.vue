@@ -111,7 +111,7 @@ export default {
     },
     ...mapActions(["setRouteList"]),
     submitForm(formName) {
-      event.preventDefault();
+      // event.preventDefault();
       this.$refs[formName].validate(valid => {
         if (valid) {
           let formData = new FormData();
