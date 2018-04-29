@@ -406,7 +406,7 @@ export default {
         .catch(_ => {});
     },
     submitDeleteArticleForm(item) {
-      api.delete("removeArticleById/post", { id: item.id }, this, "系统管理员");
+      api.delete("removeArticleById/post", item, this, "系统管理员");
     },
     submitDeleteCommentForm(item) {
       api.delete("removeCommentById/post", { id: item.id }, this, "系统管理员");
