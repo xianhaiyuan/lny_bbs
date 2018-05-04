@@ -32,11 +32,21 @@ export default {
     api
       .ajax("AllSection/get", {})
       .then(res => {
-        console.log(res)
         this.sections = res;
       })
       .catch(err => console.log(err));
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
+  },
+  watch: {
+    $route(to, from) {
+      api
+        .ajax("AllSection/get", {})
+        .then(res => {
+          this.sections = res;
+        })
+        .catch(err => console.log(err));
+      this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));
+    }
   },
   beforeDestroy() {
     this.setRouteList(JSON.parse(sessionStorage.getItem("routeList")));

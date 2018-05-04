@@ -5,8 +5,10 @@
     </div>
     <el-dialog title="增加版块" :visible.sync="dialogAddVisible">
       <div class="m-edit">
-        <el-input style="margin-bottom: 15px;" v-model="addSectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
-        <el-input style="margin-bottom: 15px;" @keydown.enter.native="addFormSubmit" v-model="addSectionForm.sec_label" placeholder="请输入版块标签"></el-input>
+        <label>版块名称</label>
+        <el-input style="margin: 8px 0;" v-model="addSectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
+        <label>版块标签</label>
+        <el-input style="margin: 8px 0;" @keydown.enter.native="addFormSubmit" v-model="addSectionForm.sec_label" placeholder="请输入版块标签"></el-input>
         <div class="u-btn">
           <el-button class="u-submit" type="primary" @click="addFormSubmit">提交
             <i class="el-icon-upload el-icon--right"></i>
@@ -16,8 +18,10 @@
     </el-dialog>
     <el-dialog title="编辑版块" :visible.sync="dialogEditVisible">
       <div class="m-edit">
-        <el-input style="margin-bottom: 15px;" v-model="editSectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
-        <el-input style="margin-bottom: 15px;" @keydown.enter.native="editFormSubmit" v-model="editSectionForm.sec_label" placeholder="请输入版块标签"></el-input>
+        <label>版块名称</label>
+        <el-input style="margin: 8px 0;" v-model="editSectionForm.sec_name" autofocus placeholder="请输入版块名称"></el-input>
+        <label>版块标签</label>
+        <el-input style="margin: 8px 0;" @keydown.enter.native="editFormSubmit" v-model="editSectionForm.sec_label" placeholder="请输入版块标签"></el-input>
         <div class="u-btn">
           <el-button class="u-submit" type="primary" @click="editFormSubmit">提交
             <i class="el-icon-upload el-icon--right"></i>

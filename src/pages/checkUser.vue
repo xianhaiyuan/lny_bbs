@@ -230,7 +230,7 @@ export default {
         .catch(err => console.log(err));
     },
     articleDelete(index, row) {
-      api.delete("removeArticleById/post", { id: row.id }, this, "版主");
+      api.delete("removeArticleById/post", row, this, "版主");
     },
     handleArticleDialog(index, row) {
       this.dialogArticleVisible = true;

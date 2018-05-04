@@ -314,7 +314,6 @@ export default {
         aid: this.$route.params.aid
       })
       .then(res => {
-        console.log(res);
         this.article = res;
         api
           .ajax("commentPageByAid/get", { aid: res.id, currentPage: 1 })
