@@ -14,7 +14,7 @@
     </el-dialog>
     <div class="block">
       <el-table :data="articlePage.pageData" style="width: 100%" stripe>
-        <el-table-column label="主题" width="300">
+        <el-table-column label="主题" width="250">
           <template slot-scope="scope">
             <router-link :to="{ name:'帖子', params: { sid: scope.row.sid, aid: scope.row.id }}">{{scope.row.title}}</router-link>
           </template>

@@ -31,7 +31,7 @@
     </el-dialog>
     <div class="block">
       <el-table :data="sectionPage.pageData" style="width: 100%" stripe>
-        <el-table-column label="版块名称" width="600">
+        <el-table-column label="版块名称" width="500">
           <template slot-scope="scope">
             {{scope.row.sec_name}}
           </template>

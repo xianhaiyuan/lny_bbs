@@ -2,7 +2,7 @@
   <div class="m-myFriend">
     <div class="block">
       <el-table :data="friendPage.pageData" style="width: 100%" stripe>
-        <el-table-column label="昵称" width="480">
+        <el-table-column label="昵称" width="380">
           <template slot-scope="scope">
             <div>{{scope.row.nickname}}</div>
           </template>
